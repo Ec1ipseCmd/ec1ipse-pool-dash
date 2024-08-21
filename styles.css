@@ -1,8 +1,7 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #121212; /* Darker background for a more modern feel */
-    color: #e0e0e0; /* Lighter text color for better readability */
-    margin: 0;
+    background-color: #121212;
+    color: #e0e0e0;
     padding: 0;
     overflow-y: scroll;
 }
@@ -44,6 +43,7 @@ body {
 h1, h2 {
     color: #e0e0e0;
     margin: 0;
+    margin-bottom: 10px;
 }
 
 .stats-grid {
