@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miner Information</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>    
+<body>
+    <div class="container">
+        <h1>Miner Information</h1>
+        <div class="data-section">
+            <h3>Public Key: <span id="minerPubkey">Loading...</span></h3>
+        </div>
+        <div class="data-section">
+            <h3>Miner ID: <span id="minerId">Loading...</span></h3>
+        </div>
+        <div class="data-section chart-container">
+            <canvas id="difficultyChart"></canvas>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
