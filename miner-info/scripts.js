@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('minerPubkey').textContent = pubkey;
 
     const dataUrl = `https://domainexpansion.tech/miner/submissions?pubkey=${encodeURIComponent(pubkey)}`;
+    const rewardsUrl = `https://domainexpansion.tech/miner/rewards?pubkey=${encodeURIComponent(pubkey)}`;
 
     fetch(dataUrl)
         .then(response => {
@@ -176,4 +177,25 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Error fetching miner data:', error);
         });
+
+    // Function to fetch claimable rewards and update the claimableRewards element
+    function fetchClaimableRewards() {
+        fetch(rewardsUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+                return response.text(); // Expecting a plain text response
+            })
+            .then(rewards => {
+                document.getElementById('claimableRewards').textContent = rewards;
+            })
+            .catch(error => {
+                console.error('Error fetching claimable rewards:', error);
+                document.getElementById('claimableRewards').textContent = 'Error fetching rewards';
+            });
+    }
+
+    // Call the function to fetch claimable rewards
+    fetchClaimableRewards();
 });
