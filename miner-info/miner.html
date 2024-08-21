@@ -19,9 +19,23 @@
         <div class="data-section">
             <h3>Claimable Rewards: <span id="claimableRewards">Loading...</span></h3>
         </div>
-        <div class="data-section chart-container">
-            <canvas id="difficultyChart"></canvas>
-            <canvas id="avgDifficultyChart"></canvas>
+        <div class="chart-container">
+            <div class="chart-row">
+                <div class="chart-item">
+                    <canvas id="difficultyChart"></canvas>
+                </div>
+                <div class="chart-item">
+                    <canvas id="avgDifficultyChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-row">
+                <div class="chart-item half-width">
+                    <canvas id="difficultyCountChart"></canvas>
+                </div>
+                <div class="chart-item half-width">
+                    <!-- This space is reserved for future use or additional content -->
+                </div>
+            </div>
         </div>
     </div>
     <script src="scripts.js"></script>
