@@ -123,30 +123,30 @@ new Chart(ctxEarnings, {
 let transactionData = [];
 
 async function getTransactions() {
-    const zXy2Q0L = "aHR0cHM6Ly9hcGkuaGVsaXVzLnh5ei92MC9hZGRyZXNzZXMvbWluZVhxUERlQmVNUjhiUFFDeXk5VW5lSlpiakZ5d3JhUzNrb1daOFNTSC90cmFuc2FjdGlvbnM/YXBpLWtleT1jNTA0YjQ2NS03ODViLTQ1NjQtYTkzOS1jMDNmYTllYjk2OGY=";
+    const encodedUrl = "aHR0cHM6Ly9hcGkuaGVsaXVzLnh5ei92MC9hZGRyZXNzZXMvbWluZVhxcERlQmVNUjhiUFFDeXk5VW5lSlpiakZ5d3JhUzNrb1daOFNTSC90cmFuc2FjdGlvbnM/YXBpLWtleT1jNTA0YjQ2NS03ODViLTQ1NjQtYTkzOS1jMDNmYTllYjk2OGY=";
 
     try {
-        const bL0mWv7 = atob(zXy2Q0L);
-        const tNf3Wj8 = await fetch(bL0mWv7, {
+        const apiUrl = atob(encodedUrl);
+        const response = await fetch(apiUrl, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
         });
 
-        if (!tNf3Wj8.ok) {
-            throw new Error(`HTTP error! Status: ${tNf3Wj8.status}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const rYp4Xq5 = await tNf3Wj8.json();
+        const data = await response.json();
 
-        vTz6Rb2 = rYp4Xq5.filter(xPq7Yv1 =>
-            xPq7Yv1.tokenTransfers.length === 0 && xPq7Yv1.description === ""
+        transactionData = data.filter(tx =>
+            tx.tokenTransfers.length === 0 && tx.description === ""
         );
 
-        console.log('Data processed successfully');
-    } catch (eJp9Nv0) {
-        console.error('An error occurred:', eJp9Nv0);
+        console.log('Transaction data fetched and stored');
+    } catch (error) {
+        console.error('Error fetching transactions:', error);
     }
 }
 
