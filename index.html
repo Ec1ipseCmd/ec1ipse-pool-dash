@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ec1ipse Mining Pool Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Ec1ipse Mining Pool Dashboard</h1>
+            <div class="search-container">
+                <form id="searchForm" action="miner-info/miner.html" method="get">
+                    <input type="text" name="pubkey" id="pubkey" placeholder="Enter Miner Public Key" required>
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+
+        <h2>General Pool Statistics</h2>
+        <div class="stats-grid">
+            <div>
+                <h3>Estimated Pool Hashrate</h3>
+                <p id="totalHashrate">Loading...</p>
+            </div>
+            <div>
+                <h3>Total Active Miners</h3>
+                <p id="activeMiners">Loading...</p>
+            </div>
+            <div>
+                <h3>Latest Pool Difficulty</h3>
+                <p id="latestDifficulty">Loading...</p>
+            </div>
+        </div>
+
+        <h2>Mining Statistics</h2>
+        <div class="mining-stats">
+            <ul>
+                <li id="recent-txn">Latest Mine Transaction: Loading...</li>
+            </ul>
+        </div>
+
+        <h2>Earnings Overview</h2>
+        <div class="earnings-stats">
+            <ul>
+                <li>Total Pool Earnings: 7 ORE</li>
+                <li>Total Paid Out: 3 ORE</li>
+            </ul>
+        </div>
+
+        <h2>Payout Details</h2>
+        <div class="block-stats">
+            <ul>
+                <li>Payout Threshold: 0.01 ORE</li>
+                <li>Payout Cooldown: 30 minutes</li>
+                <li>Pool Fees: 0%</li>
+            </ul>
+        </div>
+
+        <h2>Mining Pool Software Version</h2>
+        <div class="block-stats">
+            <ul>
+                <li>Software Version: 2.1.4</li>
+                <li>Last Update: 5 days ago</li>
+            </ul>
+        </div>
+
+        <h2>Visualizations</h2>
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3>Hashrate Over Time</h3>
+                <canvas id="hashrateChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Earnings Over Time</h3>
+                <canvas id="earningsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>
