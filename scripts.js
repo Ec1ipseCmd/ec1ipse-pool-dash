@@ -185,7 +185,7 @@ function countDifficulties() {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Difficulty Histogram From Latest Pool Mine Submission',
+                    text: 'Difficulty Histogram From Latest Mine Submissions',
                     color: '#fff',
                     font: {
                         size: 16,
