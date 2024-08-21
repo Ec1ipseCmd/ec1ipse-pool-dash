@@ -25,6 +25,8 @@ async function getTransactions() {
             tx.tokenTransfers.length === 0 && tx.description === ""
         );
 
+        updateActiveMiners();
+
         console.log('Transaction data fetched and stored');
     } catch (error) {
         console.error('Error fetching transactions:', error);
@@ -50,10 +52,6 @@ function updateMostRecentTransaction() {
 
             if (timeAgo >= 80) {
                 getTransactions();
-                updateActiveMiners()
-                setTimeout(() => {
-                    console.log("Waiting for data...");
-                }, 2000);
             }
         } else {
             recentTxnElement.textContent = 'No recent transactions available';
