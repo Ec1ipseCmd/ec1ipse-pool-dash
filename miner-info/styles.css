@@ -43,12 +43,23 @@ pre {
 }
 
 .chart-container {
-    display: flex;
-    justify-content: center;
-    width: 99%;
-    height: 500px;
+    width: 100%;
     margin: 0 auto;
-    gap: 20px;
+    padding: 0;
+}
+
+.chart-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.chart-item {
+    width: 48%;
+}
+
+.chart-item.half-width {
+    width: 49%;
 }
 
 canvas {
