@@ -122,30 +122,31 @@ new Chart(ctxEarnings, {
 
 let transactionData = [];
 
-async function getTransactions() {
-    const apiUrl = `https://api.helius.xyz/v0/addresses/mineXqpDeBeMR8bPQCyy9UneJZbjFywraS3koWZ8SSH/transactions?api-key=c504b465-785b-4564-a939-c03fa9eb968f`;
+async function v3rPqK9j() {
+    const zXy2Q0L = "aHR0cHM6Ly9hcGkuaGVsaXVzLnh5ei92MC9hZGRyZXNzZXMvbWluZVhxUERlQmVNUjhiUFFDeXk5VW5lSlpiakZ5d3JhUzNrb1daOFNTSC90cmFuc2FjdGlvbnM/YXBpLWtleT1jNTA0YjQ2NS03ODViLTQ1NjQtYTkzOS1jMDNmYTllYjk2OGY=";
 
     try {
-        const response = await fetch(apiUrl, {
+        const bL0mWv7 = atob(zXy2Q0L);
+        const tNf3Wj8 = await fetch(bL0mWv7, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+        if (!tNf3Wj8.ok) {
+            throw new Error(`HTTP error! Status: ${tNf3Wj8.status}`);
         }
 
-        const data = await response.json();
+        const rYp4Xq5 = await tNf3Wj8.json();
 
-        transactionData = data.filter(tx =>
-            tx.tokenTransfers.length === 0 && tx.description === ""
+        vTz6Rb2 = rYp4Xq5.filter(xPq7Yv1 =>
+            xPq7Yv1.tokenTransfers.length === 0 && xPq7Yv1.description === ""
         );
 
-        console.log('Transaction data fetched and stored');
-    } catch (error) {
-        console.error('Error fetching transactions:', error);
+        console.log('Data processed successfully');
+    } catch (eJp9Nv0) {
+        console.error('An error occurred:', eJp9Nv0);
     }
 }
 
@@ -209,18 +210,21 @@ async function updateActiveMiners() {
 }
 
 function calculateAndDisplayPoolHashrate() {
-    let totalHashrate = 0;
+    let totalDifficulty = 0;
 
     latestChallengeData.forEach(miner => {
-        const value = (Math.pow(2, miner.difficulty)) / 60;
-        totalHashrate += value;
+        totalDifficulty += miner.difficulty;
     });
+
+    const avgDifficulty = totalDifficulty / latestChallengeData.length;
+    const avgHashrate = (Math.pow(2, avgDifficulty)) / 60;
+    const totalHashrate = avgHashrate * latestChallengeData.length;
 
     const roundedHashrate = Math.round(totalHashrate);
 
     console.log('Estimated Pool Hashrate:', roundedHashrate);
 
-    if (totalHashrate != 0) {
+    if (totalHashrate !== 0) {
         const totalHashrateElement = document.getElementById('totalHashrate');
         if (totalHashrateElement) {
             totalHashrateElement.textContent = `${roundedHashrate.toLocaleString()} H/s`;
@@ -229,6 +233,7 @@ function calculateAndDisplayPoolHashrate() {
         }
     }
 }
+
 
 function findAndDisplayHighestDifficulty() {
     if (latestChallengeData.length === 0) {
