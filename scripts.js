@@ -122,7 +122,7 @@ new Chart(ctxEarnings, {
 
 let transactionData = [];
 
-async function v3rPqK9j() {
+async function getTransactions() {
     const zXy2Q0L = "aHR0cHM6Ly9hcGkuaGVsaXVzLnh5ei92MC9hZGRyZXNzZXMvbWluZVhxUERlQmVNUjhiUFFDeXk5VW5lSlpiakZ5d3JhUzNrb1daOFNTSC90cmFuc2FjdGlvbnM/YXBpLWtleT1jNTA0YjQ2NS03ODViLTQ1NjQtYTkzOS1jMDNmYTllYjk2OGY=";
 
     try {
