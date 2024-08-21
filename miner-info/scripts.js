@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Latest 100 Submissions (1st = Latest)',
+                            text: 'Latest 100 Submissions (1st = Newest)',
                             color: '#fff',
                             font: {
                                 size: 16,
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Average Difficulty Over Time (1st = Latest)',
+                            text: 'Average Difficulty From Latest 100 Submissions (1st = Newest)',
                             color: '#fff',
                             font: {
                                 size: 16,
