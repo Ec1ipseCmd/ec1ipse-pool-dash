@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const ctxDifficulty = document.getElementById('difficultyChart').getContext('2d');
             const ctxAvgDifficulty = document.getElementById('avgDifficultyChart').getContext('2d');
+            const ctxDifficultyCount = document.getElementById('difficultyCountChart').getContext('2d');
 
             const gradientDifficulty = ctxDifficulty.createLinearGradient(0, 0, 0, 400);
             gradientDifficulty.addColorStop(0, 'rgba(0, 255, 127, 0.7)');
@@ -65,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         },
                         tooltip: {
-                            enabled: false
+                            enabled: true
                         },
                         legend: {
                             display: false,
@@ -139,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         },
                         tooltip: {
-                            enabled: false
+                            enabled: true
                         },
                         legend: {
                             display: false,
@@ -173,19 +174,88 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             });
+
+            // Count the number of occurrences of each difficulty
+            const difficultyCount = difficulties.reduce((acc, difficulty) => {
+                acc[difficulty] = (acc[difficulty] || 0) + 1;
+                return acc;
+            }, {});
+
+            // Prepare data for the difficulty count chart
+            const countLabels = Object.keys(difficultyCount);
+            const countValues = Object.values(difficultyCount);
+
+            const gradientDifficultyCount = ctxDifficultyCount.createLinearGradient(0, 0, 0, 400);
+            gradientDifficultyCount.addColorStop(0, 'rgba(153, 102, 255, 0.7)');
+            gradientDifficultyCount.addColorStop(1, 'rgba(153, 102, 255, 0)');
+
+            new Chart(ctxDifficultyCount, {
+                type: 'bar',
+                data: {
+                    labels: countLabels,
+                    datasets: [{
+                        label: 'Difficulty Count',
+                        data: countValues,
+                        backgroundColor: gradientDifficultyCount,
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Difficulty Histogram From Latest 100 Submissions',
+                            color: '#fff',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 30
+                            }
+                        },
+                        tooltip: {
+                            enabled: true
+                        },
+                        legend: {
+                            display: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)',
+                            },
+                            ticks: {
+                                color: '#fff',
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)',
+                            },
+                            ticks: {
+                                color: '#fff',
+                            }
+                        }
+                    }
+                }
+            });
         })
         .catch(error => {
             console.error('Error fetching miner data:', error);
         });
 
-    // Function to fetch claimable rewards and update the claimableRewards element
     function fetchClaimableRewards() {
         fetch(rewardsUrl)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok.');
                 }
-                return response.text(); // Expecting a plain text response
+                return response.text();
             })
             .then(rewards => {
                 document.getElementById('claimableRewards').textContent = rewards;
@@ -195,7 +265,5 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('claimableRewards').textContent = 'Error fetching rewards';
             });
     }
-
-    // Call the function to fetch claimable rewards
     fetchClaimableRewards();
 });
