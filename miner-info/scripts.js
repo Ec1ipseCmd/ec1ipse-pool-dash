@@ -24,13 +24,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('minerId').textContent = 'No data available';
             }
 
-            const ctx = document.getElementById('difficultyChart').getContext('2d');
+            const minDifficulty = Math.min(...difficulties);
+            const maxDifficulty = Math.max(...difficulties);
 
-            const gradientDifficulty = ctx.createLinearGradient(0, 0, 0, 400);
+            const ctxDifficulty = document.getElementById('difficultyChart').getContext('2d');
+            const ctxAvgDifficulty = document.getElementById('avgDifficultyChart').getContext('2d');
+
+            const gradientDifficulty = ctxDifficulty.createLinearGradient(0, 0, 0, 400);
             gradientDifficulty.addColorStop(0, 'rgba(0, 255, 127, 0.7)');
             gradientDifficulty.addColorStop(1, 'rgba(0, 255, 127, 0)');
 
-            new Chart(ctx, {
+            new Chart(ctxDifficulty, {
                 type: 'line',
                 data: {
                     labels: labels,
@@ -48,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Latest 100 Submissions (1st = Newest)',
+                            text: 'Latest 100 Submissions (1st = Latest)',
                             color: '#fff',
                             font: {
                                 size: 16,
@@ -60,11 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            titleColor: '#00ff7f',
-                            bodyColor: '#fff',
-                            cornerRadius: 4,
-                            padding: 10
+                            enabled: false
                         },
                         legend: {
                             display: false,
@@ -79,8 +79,82 @@ document.addEventListener('DOMContentLoaded', function() {
                             ticks: {
                                 color: '#fff',
                             },
-                            min: Math.min(...difficulties) - 1,
-                            max: Math.max(...difficulties) + 1,
+                            min: minDifficulty - 1,
+                            max: maxDifficulty + 1,
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)',
+                            },
+                            ticks: {
+                                color: '#fff',
+                            }
+                        }
+                    },
+                    elements: {
+                        line: {
+                            tension: 0.4
+                        }
+                    }
+                }
+            });
+
+            const avgDifficulties = difficulties.map((_, i, arr) => {
+                const subset = arr.slice(0, i + 1);
+                return subset.reduce((sum, val) => sum + val, 0) / subset.length;
+            });
+
+            const gradientAvgDifficulty = ctxAvgDifficulty.createLinearGradient(0, 0, 0, 400);
+            gradientAvgDifficulty.addColorStop(0, 'rgba(255, 99, 132, 0.7)');
+            gradientAvgDifficulty.addColorStop(1, 'rgba(255, 99, 132, 0)');
+
+            new Chart(ctxAvgDifficulty, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Average Difficulty',
+                        data: avgDifficulties,
+                        backgroundColor: gradientAvgDifficulty,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Average Difficulty Over Time (1st = Latest)',
+                            color: '#fff',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 30
+                            }
+                        },
+                        tooltip: {
+                            enabled: false
+                        },
+                        legend: {
+                            display: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)',
+                            },
+                            ticks: {
+                                color: '#fff',
+                            },
+                            min: minDifficulty - 1,
+                            max: maxDifficulty + 1,
                         },
                         x: {
                             grid: {
