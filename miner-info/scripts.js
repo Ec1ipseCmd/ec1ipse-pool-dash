@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Latest 100 Submissions (1st = Newest)',
+                            text: 'Difficulty From Latest 100 Submissions (1st = Newest)',
                             color: '#fff',
                             font: {
                                 size: 16,
