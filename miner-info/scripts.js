@@ -19,6 +19,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const labels = Array.from({ length: count }, (_, i) => (count - i).toString());
             const difficulties = data.map(item => item.difficulty).reverse();
 
+            function printHashrates() {
+                const calculatedValues = [];
+                difficulties.forEach(difficulty => {
+                    const calculatedValue = (Math.pow(2, difficulty) / 60);
+                    calculatedValues.push(calculatedValue);
+                });
+                return calculatedValues;
+            }
+
+            const hashrates = printHashrates();
+
             if (data.length > 0) {
                 document.getElementById('minerId').textContent = data[0].miner_id;
             } else {
@@ -31,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const ctxDifficulty = document.getElementById('difficultyChart').getContext('2d');
             const ctxAvgDifficulty = document.getElementById('avgDifficultyChart').getContext('2d');
             const ctxDifficultyCount = document.getElementById('difficultyCountChart').getContext('2d');
+            const ctxAvgHashrate = document.getElementById('avgHashrateChart').getContext('2d');
 
             const gradientDifficulty = ctxDifficulty.createLinearGradient(0, 0, 0, 400);
             gradientDifficulty.addColorStop(0, 'rgba(0, 255, 127, 0.7)');
@@ -244,26 +256,109 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             });
+
+            // Calculate the average hashrates
+            const avgHashrates = hashrates.map((_, i, arr) => {
+                const subset = arr.slice(0, i + 1);
+                return subset.reduce((sum, val) => sum + val, 0) / subset.length;
+            });
+
+            const gradientAvgHashrate = ctxAvgHashrate.createLinearGradient(0, 0, 0, 400);
+            gradientAvgHashrate.addColorStop(0, 'rgba(54, 162, 235, 0.7)');
+            gradientAvgHashrate.addColorStop(1, 'rgba(54, 162, 235, 0)');
+
+            new Chart(ctxAvgHashrate, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Average Hashrate (Per second)',
+                        data: avgHashrates,
+                        backgroundColor: gradientAvgHashrate,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Average Hashrate From Latest 100 Submissions (1st = Newest)',
+                            color: '#fff',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 30
+                            }
+                        },
+                        tooltip: {
+                            enabled: true
+                        },
+                        legend: {
+                            display: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)',
+                            },
+                            ticks: {
+                                color: '#fff',
+                            },
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)',
+                            },
+                            ticks: {
+                                color: '#fff',
+                            }
+                        }
+                    },
+                    elements: {
+                        line: {
+                            tension: 0.4
+                        }
+                    }
+                }
+            });
         })
         .catch(error => {
-            console.error('Error fetching miner data:', error);
+            console.error('There was a problem with the fetch operation:', error);
+            document.getElementById('minerId').textContent = 'No data available';
         });
 
-    function fetchClaimableRewards() {
         fetch(rewardsUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok.');
-                }
-                return response.text();
-            })
-            .then(rewards => {
-                document.getElementById('claimableRewards').textContent = rewards;
-            })
-            .catch(error => {
-                console.error('Error fetching claimable rewards:', error);
-                document.getElementById('claimableRewards').textContent = 'Error fetching rewards';
-            });
-    }
-    fetchClaimableRewards();
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok.');
+            }
+            return response.json();
+        })
+        .then(rewardsData => {
+            const rewardElement = document.getElementById('claimableRewards');
+    
+            if (rewardElement) {
+                rewardElement.textContent = rewardsData;
+            } else {
+                console.error('Element with ID "claimableRewards" not found in the DOM.');
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+            const rewardElement = document.getElementById('claimableRewards');
+    
+            if (rewardElement) {
+                rewardElement.textContent = 'No rewards available';
+            } else {
+                console.error('Element with ID "claimableRewards" not found in the DOM.');
+            }
+        });    
 });
