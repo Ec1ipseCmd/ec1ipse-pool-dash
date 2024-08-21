@@ -223,7 +223,7 @@ function calculateAndDisplayPoolHashrate() {
     if (totalHashrate != 0) {
         const totalHashrateElement = document.getElementById('totalHashrate');
         if (totalHashrateElement) {
-            totalHashrateElement.textContent = `${roundedHashrate} H/s`;
+            totalHashrateElement.textContent = `${roundedHashrate.toLocaleString()} H/s`;
         } else {
             console.error('Element with ID "totalHashrate" not found.');
         }
