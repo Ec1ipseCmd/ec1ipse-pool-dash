@@ -39,8 +39,6 @@ function updateMostRecentTransaction() {
         if (transactionData.length > 0) {
             const signature = transactionData[0].signature;
             const timestamp = transactionData[0].timestamp;
-
-            // Calculate the time ago
             const now = Math.floor(Date.now() / 1000);
             const timeAgo = now - timestamp;
             const seconds = timeAgo % 60;
@@ -50,7 +48,7 @@ function updateMostRecentTransaction() {
 
             recentTxnElement.innerHTML = `Latest Mine Transaction: <a href="https://solscan.io/tx/${signature}" target="_blank">${signature}</a> (${timeAgoString})`;
 
-            if (timeAgo >= 80) {
+            if (timeAgo >= 90) {
                 getTransactions();
             }
         } else {
@@ -228,12 +226,5 @@ function countDifficulties() {
     });
 }
 
-function updateDashboard() {
-    updateActiveMiners();
-    updateMostRecentTransaction();
-}
-
 getTransactions();
-updateDashboard();
-setInterval(updateDashboard, 60000);
 setInterval(updateMostRecentTransaction, 1000);
