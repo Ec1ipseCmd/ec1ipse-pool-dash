@@ -48,8 +48,9 @@ function updateMostRecentTransaction() {
 
             recentTxnElement.innerHTML = `Latest Mine Transaction: <a href="https://solscan.io/tx/${signature}" target="_blank">${signature}</a> (${timeAgoString})`;
 
-            if (timeAgo >= 90) {
+            if (timeAgo >= 80) {
                 getTransactions();
+                setTimeout(console.log("Waiting for data..."), 2000)
             }
         } else {
             recentTxnElement.textContent = 'No recent transactions available';
