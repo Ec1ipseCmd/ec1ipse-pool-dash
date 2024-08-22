@@ -1,231 +1,149 @@
-let transactionData = [];
-let latestChallengeData = [];
-let difficultyCounts = {};
-let difficultyChart;
-
-async function getTransactions() {
-    const encodedUrl = "aHR0cHM6Ly9hcGkuaGVsaXVzLnh5ei92MC9hZGRyZXNzZXMvbWluZVhxcERlQmVNUjhiUFFDeXk5VW5lSlpiakZ5d3JhUzNrb1daOFNTSC90cmFuc2FjdGlvbnM/YXBpLWtleT1jNTA0YjQ2NS03ODViLTQ1NjQtYTkzOS1jMDNmYTllYjk2OGY=";
-
-    try {
-        const apiUrl = atob(encodedUrl);
-        const response = await fetch(apiUrl, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        transactionData = data.filter(tx =>
-            tx.tokenTransfers.length === 0 && tx.description === ""
-        );
-
-        updateActiveMiners();
-
-        console.log('Transaction data fetched and stored');
-    } catch (error) {
-        console.error('Error fetching transactions:', error);
-    }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+    padding: 0;
+    overflow-y: scroll;
 }
 
-function updateMostRecentTransaction() {
-    const recentTxnElement = document.getElementById('recent-txn');
-    if (recentTxnElement) {
-        if (transactionData.length > 0) {
-            const signature = transactionData[0].signature;
-            const timestamp = transactionData[0].timestamp;
-            const now = Math.floor(Date.now() / 1000);
-            const timeAgo = now - timestamp;
-            const seconds = timeAgo % 60;
-            const minutes = Math.floor(timeAgo / 60) % 60;
-
-            const timeAgoString = `${minutes}m ${seconds}s ago`;
-
-            recentTxnElement.innerHTML = `Latest Mine Transaction: <a href="https://solscan.io/tx/${signature}" target="_blank">${signature}</a> (${timeAgoString})`;
-
-            if (timeAgo >= 80) {
-                getTransactions();
-                setTimeout(console.log("Waiting for data..."), 5000)
-            }
-        } else {
-            recentTxnElement.textContent = 'No recent transactions available';
-        }
-    }
+::-webkit-scrollbar {
+    width: 12px;
 }
 
-async function updateActiveMiners() {
-    const url = 'https://domainexpansion.tech/last-challenge-submissions';
-    
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
-        latestChallengeData = await response.json();
-        const activeMinersCount = latestChallengeData.length;
-        console.log('Active Miners Count:', activeMinersCount);
-        
-        const activeMinersElement = document.getElementById('activeMiners');
-        activeMinersElement.textContent = `${activeMinersCount}`;
-
-        calculateAndDisplayPoolHashrate();
-        findAndDisplayHighestDifficulty();
-        countDifficulties();
-
-    } catch (error) {
-        console.error('Error fetching active miners data:', error);
-        document.getElementById('activeMiners').textContent = 'Error loading data';
-    }
+::-webkit-scrollbar-track {
+    background: #1e1e1e;
+    border-radius: 8px;
 }
 
-function calculateAndDisplayPoolHashrate() {
-    let totalDifficulty = 0;
-
-    latestChallengeData.forEach(miner => {
-        totalDifficulty += miner.difficulty;
-    });
-
-    const avgDifficulty = totalDifficulty / latestChallengeData.length;
-    const avgHashrate = (Math.pow(2, avgDifficulty)) / 60;
-    const totalHashrate = avgHashrate * latestChallengeData.length;
-
-    const roundedHashrate = Math.round(totalHashrate);
-
-    console.log('Estimated Pool Hashrate:', roundedHashrate);
-
-    if (totalHashrate !== 0) {
-        const totalHashrateElement = document.getElementById('totalHashrate');
-        if (totalHashrateElement) {
-            totalHashrateElement.textContent = `${roundedHashrate.toLocaleString()} H/s`;
-        } else {
-            console.error('Element with ID "totalHashrate" not found.');
-        }
-    }
+::-webkit-scrollbar-thumb {
+    background: #424242;
+    border-radius: 8px;
+    transition: background 0.3s;
 }
 
-function findAndDisplayHighestDifficulty() {
-    if (latestChallengeData.length === 0) {
-        console.warn('No challenge data available to find the highest difficulty.');
-        return;
-    }
-
-    const latestDifficulty = latestChallengeData.reduce((max, miner) => {
-        return miner.difficulty > max ? miner.difficulty : max;
-    }, 0);
-
-    console.log('Latest Pool Difficulty:', latestDifficulty)
-
-    const difficultyElement = document.getElementById('latestDifficulty');
-    if (difficultyElement) {
-        difficultyElement.textContent = `${latestDifficulty}`;
-    } else {
-        console.error('Element with ID "latestDifficulty" not found.');
-    }
+::-webkit-scrollbar-thumb:hover {
+    background: #616161;
 }
 
-let difficultyHistogramChart;
-
-function countDifficulties() {
-    console.log("Called")
-    if (latestChallengeData.length === 0) {
-        console.warn('No challenge data available.');
-        return;
-    }
-
-    difficultyCounts = {};
-
-    latestChallengeData.forEach(miner => {
-        const difficulty = miner.difficulty;
-        if (difficulty in difficultyCounts) {
-            difficultyCounts[difficulty]++;
-        } else {
-            difficultyCounts[difficulty] = 1;
-        }
-    });
-
-    console.log('Difficulty counts:', difficultyCounts);
-
-    const countLabels = Object.keys(difficultyCounts);
-    const countValues = Object.values(difficultyCounts);
-
-    const ctxDifficultyCount = document.getElementById('difficultyHistogram').getContext('2d');
-
-    const gradientDifficultyCount = ctxDifficultyCount.createLinearGradient(0, 0, 0, 400);
-    gradientDifficultyCount.addColorStop(0, 'rgba(153, 102, 255, 0.7)');
-    gradientDifficultyCount.addColorStop(1, 'rgba(153, 102, 255, 0)');
-
-    if (difficultyHistogramChart) {
-        difficultyHistogramChart.destroy();
-    }
-
-    difficultyHistogramChart = new Chart(ctxDifficultyCount, {
-        type: 'bar',
-        data: {
-            labels: countLabels,
-            datasets: [{
-                label: 'Difficulty Count',
-                data: countValues,
-                backgroundColor: gradientDifficultyCount,
-                borderColor: 'rgba(153, 102, 255, 1)',
-                borderWidth: 2,
-            }]
-        },
-        options: {
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Difficulty Histogram From Latest Mine Submissions',
-                    color: '#fff',
-                    font: {
-                        size: 16,
-                        weight: 'bold'
-                    },
-                    padding: {
-                        top: 10,
-                        bottom: 30
-                    }
-                },
-                tooltip: {
-                    enabled: true
-                },
-                legend: {
-                    display: false,
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)',
-                    },
-                    ticks: {
-                        color: '#fff',
-                    }
-                },
-                x: {
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)',
-                    },
-                    ticks: {
-                        color: '#fff',
-                    }
-                }
-            }
-        }
-    });
+.container {
+    width: 90%;
+    margin: auto;
+    padding: 20px;
 }
 
-getTransactions();
-setInterval(updateMostRecentTransaction, 1000);
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #00e676;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
+
+h1, h2 {
+    color: #e0e0e0;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stats-grid div {
+    background: linear-gradient(145deg, #1e1e1e, #121212);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.mining-stats, .earnings-stats {
+    margin-bottom: 30px;
+}
+
+.mining-stats ul, .earnings-stats ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.mining-stats li, .earnings-stats li {
+    background: linear-gradient(145deg, #1e1e1e, #121212);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.charts-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.chart-container {
+    flex: 1 1 calc(33% - 20px);
+    background: linear-gradient(145deg, #1e1e1e, #121212);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+canvas {
+    width: 100%;
+    height: 200px;
+    background: #1c1c1c;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+#recent-txn a {
+    color: #00bfff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+#recent-txn a:hover {
+    color: #00aaff;
+}
+
+.search-container {
+    margin-bottom: 0;
+    text-align: right;
+}
+
+.search-container input {
+    padding: 10px;
+    width: 250px;
+    border-radius: 8px;
+    border: 1px solid #00e676;
+    background: #1e1e1e;
+    color: #e0e0e0;
+    margin-right: 10px;
+    transition: background 0.3s, border-color 0.3s;
+}
+
+.search-container input:focus {
+    background: #2e2e2e;
+    border-color: #00b248;
+    outline: none;
+}
+
+.search-container button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    background-color: #00e676;
+    color: #121212;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.search-container button:hover {
+    background-color: #00b248;
+    transform: scale(1.05);
+}
