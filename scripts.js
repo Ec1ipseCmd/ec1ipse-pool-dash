@@ -1,138 +1,148 @@
-let transactionData = [];
-let latestChallengeData = [];
-let difficultyCounts = {};
-let difficultyChart;
+let latestMineData = null;
+let latestSubmissionsData = null;
+let challengesData = null;
+let activeMinersData = null;
+let difficultyHistogram = null;
+let latestDifficulty = null;
 
-async function getTransactions() {
-    const encodedUrl = "aHR0cHM6Ly9hcGkuaGVsaXVzLnh5ei92MC9hZGRyZXNzZXMvbWluZVhxcERlQmVNUjhiUFFDeXk5VW5lSlpiakZ5d3JhUzNrb1daOFNTSC90cmFuc2FjdGlvbnM/YXBpLWtleT1jNTA0YjQ2NS03ODViLTQ1NjQtYTkzOS1jMDNmYTllYjk2OGY=";
-
+async function getLatestMine() {
+    const url = 'https://domainexpansion.tech/txns/latest-mine';
+    
     try {
-        const apiUrl = atob(encodedUrl);
-        const response = await fetch(apiUrl, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
+        const response = await fetch(url);
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-
         const data = await response.json();
-
-        transactionData = data.filter(tx =>
-            tx.tokenTransfers.length === 0 && tx.description === ""
-        );
-
-        updateActiveMiners();
-
-        console.log('Transaction data fetched and stored');
+        latestMineData = data;
+        console.log(latestMineData);
+        updateLatestTransaction();
     } catch (error) {
-        console.error('Error fetching transactions:', error);
+        console.error('Error fetching data:', error);
+        throw error;
     }
 }
 
-function updateMostRecentTransaction() {
-    const recentTxnElement = document.getElementById('recent-txn');
-    if (recentTxnElement) {
-        if (transactionData.length > 0) {
-            const signature = transactionData[0].signature;
-            const timestamp = transactionData[0].timestamp;
-            const now = Math.floor(Date.now() / 1000);
-            const timeAgo = now - timestamp;
-            const seconds = timeAgo % 60;
-            const minutes = Math.floor(timeAgo / 60) % 60;
-
-            const timeAgoString = `${minutes}m ${seconds}s ago`;
-
-            recentTxnElement.innerHTML = `Latest Mine Transaction: <a href="https://solscan.io/tx/${signature}" target="_blank">${signature}</a> (${timeAgoString})`;
-
-            if (timeAgo >= 80) {
-                getTransactions();
-                setTimeout(console.log("Waiting for data..."), 5000)
-            }
-        } else {
-            recentTxnElement.textContent = 'No recent transactions available';
-        }
-    }
-}
-
-async function updateActiveMiners() {
+async function getLatestSubmissions() {
     const url = 'https://domainexpansion.tech/last-challenge-submissions';
     
     try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json'
-            }
-        });
-
+        const response = await fetch(url);
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        latestChallengeData = await response.json();
-        const activeMinersCount = latestChallengeData.length;
-        console.log('Active Miners Count:', activeMinersCount);
-        
-        const activeMinersElement = document.getElementById('activeMiners');
-        activeMinersElement.textContent = `${activeMinersCount}`;
-
-        calculateAndDisplayPoolHashrate();
-        findAndDisplayHighestDifficulty();
-        countDifficulties();
-
+        const data = await response.json();
+        latestSubmissionsData = data;
+        console.log(latestSubmissionsData);
+        updateLatestDifficulty();
+        updateDifficultyHistogram();
     } catch (error) {
-        console.error('Error fetching active miners data:', error);
-        document.getElementById('activeMiners').textContent = 'Error loading data';
+        console.error('Error fetching data:', error);
+        throw error;
     }
 }
 
-function calculateAndDisplayPoolHashrate() {
-    let totalHashrate = 0;
+async function getChallenges() {
+    const url = 'https://domainexpansion.tech/challenges';
 
-    latestChallengeData.forEach(miner => {
-        let minerHashrate;
-
-        if (miner.difficulty <= 17) {
-            minerHashrate = Math.pow(2, miner.difficulty) / 60;
-        } else {
-            // For difficulties above 17, we reduce the hashrate slightly
-            const diffAbove17 = miner.difficulty - 17;
-            const scalingFactor = Math.pow(0.68, diffAbove17); // Exponentially reduce for each diff above 17
-            minerHashrate = (Math.pow(2, 17) / 60) * scalingFactor * Math.pow(2, diffAbove17);
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        totalHashrate += minerHashrate;
-    });
-
-    const roundedHashrate = Math.round(totalHashrate);
-
-    console.log('Estimated Pool Hashrate:', roundedHashrate);
-
-    if (totalHashrate !== 0) {
-        const totalHashrateElement = document.getElementById('totalHashrate');
-        if (totalHashrateElement) {
-            totalHashrateElement.textContent = `${roundedHashrate.toLocaleString()} H/s`;
-        } else {
-            console.error('Element with ID "totalHashrate" not found.');
-        }
+        const data = await response.json();
+        challengesData = data;
+        console.log(challengesData);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
     }
 }
 
-function findAndDisplayHighestDifficulty() {
-    if (latestChallengeData.length === 0) {
+async function getActiveMiners() {
+    const url = 'https://ec1ipse.me/active-miners';
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        activeMinersData = data;
+        console.log(activeMinersData);
+        updateActiveMiners();
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+}
+
+function updateLatestTransaction() {
+    const element = document.getElementById('recent-txn');
+    
+    if (element && latestMineData) {
+        const signature = latestMineData.signature;
+        const url = `https://solscan.io/tx/${signature}`;
+
+        element.innerHTML = `Latest Mine Transaction: <a href="${url}" target="_blank">${signature}</a> (<span id="time-ago"></span>)`;
+
+        updateTimeAgo();
+    } else {
+        console.error('Element with ID "recent-txn" not found or latestMineData is not available.');
+    }
+}
+
+function updateTimeAgo() {
+    const element = document.getElementById('time-ago');
+    
+    if (element && latestMineData) {
+        const createdAt = new Date(latestMineData.created_at);
+
+        createdAt.setTime(createdAt.getTime() - (5 * 60 * 60 * 1000));
+
+        const unixTimestamp = Math.floor(createdAt.getTime() / 1000);
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        
+        const differenceInSeconds = currentTimestamp - unixTimestamp;
+        const minutes = Math.floor(differenceInSeconds / 60);
+        const seconds = differenceInSeconds % 60;
+
+        element.textContent = `${minutes}m ${seconds}s ago`;
+
+        if (differenceInSeconds > 80) {
+            getLatestData();
+            setTimeout(console.log("Waiting for data..."), 2000);
+        }
+    } else {
+        console.error('Element with ID "time-ago" not found or latestMineData is not available.');
+    }
+}
+
+function updateLatestHashrateEstimate() {
+    const element = document.getElementById('estimatedHashrate');
+
+    let estimatedPoolHashrate = Math.pow(2, latestDifficulty) / 60;
+    
+    const formattedHashrate = Math.round(estimatedPoolHashrate).toLocaleString();
+
+    element.textContent = `${formattedHashrate} H/s`;
+
+    console.log(estimatedPoolHashrate);
+}
+
+
+function updateLatestDifficulty() {
+    if (latestSubmissionsData.length === 0) {
         console.warn('No challenge data available to find the highest difficulty.');
         return;
     }
 
-    const latestDifficulty = latestChallengeData.reduce((max, miner) => {
+    latestDifficulty = latestSubmissionsData.reduce((max, miner) => {
         return miner.difficulty > max ? miner.difficulty : max;
     }, 0);
 
     console.log('Latest Pool Difficulty:', latestDifficulty)
+    updateLatestHashrateEstimate();
 
     const difficultyElement = document.getElementById('latestDifficulty');
     if (difficultyElement) {
@@ -142,49 +152,50 @@ function findAndDisplayHighestDifficulty() {
     }
 }
 
-let difficultyHistogramChart;
 
-function countDifficulties() {
-    console.log("Called")
-    if (latestChallengeData.length === 0) {
-        console.warn('No challenge data available.');
-        return;
+function updateActiveMiners() {
+    const element = document.getElementById('activeMiners');
+    
+    if (element) {
+        element.textContent = activeMinersData;
+    } else {
+        console.error('Element with ID "activeMiners" not found.');
     }
+}
 
-    difficultyCounts = {};
+function updateDifficultyHistogram() {
+    const difficultyCounts = {};
 
-    latestChallengeData.forEach(miner => {
-        const difficulty = miner.difficulty;
-        if (difficulty in difficultyCounts) {
+    latestSubmissionsData.forEach(submission => {
+        const difficulty = submission.difficulty;
+        if (difficultyCounts[difficulty]) {
             difficultyCounts[difficulty]++;
         } else {
             difficultyCounts[difficulty] = 1;
         }
     });
 
-    console.log('Difficulty counts:', difficultyCounts);
+    const difficulties = Object.keys(difficultyCounts);
+    const counts = difficulties.map(difficulty => difficultyCounts[difficulty]);
 
-    const countLabels = Object.keys(difficultyCounts);
-    const countValues = Object.values(difficultyCounts);
+    const ctx = document.getElementById('difficultyHistogram').getContext('2d');
 
-    const ctxDifficultyCount = document.getElementById('difficultyHistogram').getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(153, 102, 255, 0.7)');
+    gradient.addColorStop(1, 'rgba(153, 102, 255, 0)');
 
-    const gradientDifficultyCount = ctxDifficultyCount.createLinearGradient(0, 0, 0, 400);
-    gradientDifficultyCount.addColorStop(0, 'rgba(153, 102, 255, 0.7)');
-    gradientDifficultyCount.addColorStop(1, 'rgba(153, 102, 255, 0)');
-
-    if (difficultyHistogramChart) {
-        difficultyHistogramChart.destroy();
+    if (difficultyHistogram) {
+        difficultyHistogram.destroy();
     }
 
-    difficultyHistogramChart = new Chart(ctxDifficultyCount, {
+    difficultyHistogram = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: countLabels,
+            labels: difficulties,
             datasets: [{
                 label: 'Difficulty Count',
-                data: countValues,
-                backgroundColor: gradientDifficultyCount,
+                data: counts,
+                backgroundColor: gradient,
                 borderColor: 'rgba(153, 102, 255, 1)',
                 borderWidth: 2,
             }]
@@ -193,7 +204,7 @@ function countDifficulties() {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Difficulty Histogram From Latest Mine Submissions',
+                    text: 'Difficulty Histogram From Latest Submissions',
                     color: '#fff',
                     font: {
                         size: 16,
@@ -208,7 +219,7 @@ function countDifficulties() {
                     enabled: true
                 },
                 legend: {
-                    display: false,
+                    display: false
                 }
             },
             scales: {
@@ -234,5 +245,12 @@ function countDifficulties() {
     });
 }
 
-getTransactions();
-setInterval(updateMostRecentTransaction, 1000);
+function getLatestData() {
+    getLatestMine();
+    getLatestSubmissions();
+    getChallenges();
+    getActiveMiners();
+}
+
+getLatestData();
+setInterval(updateTimeAgo, 1000);
