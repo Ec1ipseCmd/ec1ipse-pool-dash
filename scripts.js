@@ -50,7 +50,7 @@ function updateMostRecentTransaction() {
 
             if (timeAgo >= 80) {
                 getTransactions();
-                setTimeout(console.log("Waiting for data..."), 2000)
+                setTimeout(console.log("Waiting for data..."), 5000)
             }
         } else {
             recentTxnElement.textContent = 'No recent transactions available';
