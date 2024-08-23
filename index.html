@@ -11,7 +11,7 @@
         <div class="header">
             <h1>Ec1ipse Mining Pool Dashboard</h1>
             <div class="header-actions">
-                <button id="getStartedButton" onclick="window.open('https://gitbook.ec1ipse.me/', '_blank')">Getting Started</button>
+                <button id="getStartedButton" onclick="window.open('https://gitbook.ec1ipse.me/', '_blank')">Get Started</button>
                 <div class="search-container">
                     <form id="searchForm" action="miner-info/miner" target="_blank" method="get">
                         <input type="text" name="pubkey" id="pubkey" placeholder="Enter Miner Public Key" required>
@@ -70,14 +70,20 @@
         </div>
 
         <h2>Visualizations</h2>
-            <div class="chart-row">
-                <div class="chart-container">
-                    <canvas id="difficultyHistogram"></canvas>
-                </div>
-                <div class="chart-container">
-                    <canvas id="difficultyOverTime"></canvas>
-                </div>
+        <div class="chart-row">
+            <div class="chart-container">
+                <canvas id="difficultyHistogram"></canvas>
             </div>
+            <div class="chart-container">
+                <canvas id="difficultyOverTime"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Tips for developing this dashboard are appreciated!</p>
+        <p>Solana Address: <a href="https://solscan.io/account/877iwgC44Fi948SrRrUDQg1GSFWnEdmP6QkJxWi4742G" id="solana-address">877iwgC44Fi948SrRrUDQg1GSFWnEdmP6QkJxWi4742G</a></p>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="scripts.js"></script>
