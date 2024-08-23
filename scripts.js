@@ -63,7 +63,7 @@ async function getChallenges() {
 }
 
 async function getActiveMiners() {
-    const url = 'https://ec1ipse.me/active-miners';
+    const url = 'https://domainexpansion.tech/active-miners';
 
     try {
         const response = await fetch(url);
