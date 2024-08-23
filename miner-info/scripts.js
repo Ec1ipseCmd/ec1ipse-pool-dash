@@ -1,5 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 const pubkey = urlParams.get('pubkey');
+let data = null;
 
 document.getElementById('minerPubkey').textContent = pubkey;
 
@@ -12,15 +13,15 @@ async function fetchDataAndUpdateCharts() {
     try {
         const dataResponse = await fetch(dataUrl);
         if (!dataResponse.ok) throw new Error('Network response was not ok.');
-        const data = await dataResponse.json();
+        data = await dataResponse.json();
 
         const count = data.length;
         const labels = Array.from({ length: count }, (_, i) => (count - i).toString());
         const difficulties = data.map(item => item.difficulty).reverse();
 
-        const calculatedValues = difficulties.map(difficulty => (Math.pow(2, difficulty) / 60));
-
         document.getElementById('minerId').textContent = data.length > 0 ? data[0].miner_id : 'No data available';
+
+        updateTimeAgo();
 
         const minDifficulty = Math.min(...difficulties);
         const maxDifficulty = Math.max(...difficulties);
@@ -268,5 +269,40 @@ async function fetchDataAndUpdateCharts() {
     }
 }
 
+function updateTimeAgo() {
+    if (data.length > 0) {
+        const createdAt = data[0].created_at;
+        const date = new Date(createdAt);
+
+        const offsetDate = new Date(date.getTime() - 5 * 60 * 60 * 1000);
+
+        // Convert the offset date to a Unix timestamp
+        const unixTimestamp = Math.floor(offsetDate.getTime() / 1000);
+
+        // Calculate the "time ago" in seconds
+        const now = Math.floor(Date.now() / 1000);
+        const timeAgoInSeconds = now - unixTimestamp;
+
+        // Convert "time ago" into a readable format
+        const minutes = Math.floor(timeAgoInSeconds / 60);
+        const seconds = timeAgoInSeconds % 60;
+
+        const timeAgo = `${minutes}m ${seconds}s ago`;
+        document.getElementById('lastSubmittion').textContent = timeAgo
+
+        if (timeAgoInSeconds > 120) {
+            return
+        }
+
+        if (timeAgoInSeconds > 80) {
+            fetchDataAndUpdateCharts();
+            setTimeout(console.log("Waiting for data..."), 5000)
+        }
+    } else {
+        console.warn('No submission data available.');
+    }
+}
+
 fetchDataAndUpdateCharts();
 setInterval(fetchDataAndUpdateCharts, 60000);
+setInterval(updateTimeAgo, 1000)
