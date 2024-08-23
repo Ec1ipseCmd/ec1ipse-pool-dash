@@ -54,6 +54,7 @@ async function getChallenges() {
         }
         const data = await response.json();
         challengesData = data;
+        updateDayEarnings();
         console.log(challengesData);
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -170,6 +171,25 @@ function updateActiveMiners() {
         element.textContent = activeMinersData;
     } else {
         console.error('Element with ID "activeMiners" not found.');
+    }
+}
+
+function updateDayEarnings() {
+    const element = document.getElementById('dayEarnings')
+
+    if (!Array.isArray(challengesData) || challengesData.length === 0) {
+        console.warn('No challenge data available.');
+        return;
+    }
+
+    const totalRewards = challengesData.reduce((sum, item) => sum + item.rewards_earned, 0);
+
+    const result = totalRewards / 100000000000;
+
+    if (element) {
+        element.textContent = result;
+    } else {
+        console.error('Element with ID "dayEarnings" not found.');
     }
 }
 
