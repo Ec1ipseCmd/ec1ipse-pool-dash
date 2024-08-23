@@ -64,7 +64,7 @@ async function getChallenges() {
 }
 
 async function getActiveMiners() {
-    const url = 'https://domainexpansion.tech/active-miners';
+    const url = 'https://ec1ipse.me/active-miners/active-miners';
 
     try {
         const response = await fetch(url);
@@ -117,7 +117,7 @@ function updateTimeAgo() {
 
         element.textContent = `${minutes}m ${seconds}s ago`;
 
-        if (differenceInSeconds > 80 && currentTimestamp - lastFetchTimestamp > 30) { // Only fetch data if 30 seconds have passed since last fetch
+        if (differenceInSeconds > 80 && currentTimestamp - lastFetchTimestamp > 30) {
             lastFetchTimestamp = currentTimestamp;
             getLatestData();
             console.log("Fetching new data...");
