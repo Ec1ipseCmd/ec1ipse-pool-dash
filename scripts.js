@@ -5,6 +5,7 @@ let activeMinersData = null;
 let difficultyHistogram = null;
 let latestDifficulty = null;
 let difficultyOverTimeChart = null;
+let lastFetchTimestamp = 0;
 
 async function getLatestMine() {
     const url = 'https://domainexpansion.tech/txns/latest-mine';
@@ -17,7 +18,7 @@ async function getLatestMine() {
         const data = await response.json();
         latestMineData = data;
         console.log(latestMineData);
-        updateLatestTransaction();
+        // updateLatestTransaction();
     } catch (error) {
         console.error('Error fetching data:', error);
         throw error;
@@ -80,6 +81,7 @@ async function getActiveMiners() {
     }
 }
 
+/*
 function updateLatestTransaction() {
     const element = document.getElementById('recent-txn');
     
@@ -94,14 +96,16 @@ function updateLatestTransaction() {
         console.error('Element with ID "recent-txn" not found or latestMineData is not available.');
     }
 }
+*/
 
+
+/*
 function updateTimeAgo() {
     const element = document.getElementById('time-ago');
     
     if (element && latestMineData) {
         const createdAt = new Date(latestMineData.created_at);
-
-        createdAt.setTime(createdAt.getTime() - (5 * 60 * 60 * 1000));
+        createdAt.setTime(createdAt.getTime() - (5 * 60 * 60 * 1000)); // Adjust for timezone offset
 
         const unixTimestamp = Math.floor(createdAt.getTime() / 1000);
         const currentTimestamp = Math.floor(Date.now() / 1000);
@@ -112,14 +116,17 @@ function updateTimeAgo() {
 
         element.textContent = `${minutes}m ${seconds}s ago`;
 
-        if (differenceInSeconds > 80) {
+        if (differenceInSeconds > 80 && currentTimestamp - lastFetchTimestamp > 30) { // Only fetch data if 30 seconds have passed since last fetch
+            lastFetchTimestamp = currentTimestamp;
             getLatestData();
-            setTimeout(console.log("Waiting for data..."), 5000);
+            console.log("Fetching new data...");
         }
     } else {
         console.error('Element with ID "time-ago" not found or latestMineData is not available.');
     }
 }
+*/
+
 
 function updateAverageHashrate() {
     if (!Array.isArray(challengesData) || challengesData.length === 0) {
@@ -373,4 +380,4 @@ function getLatestData() {
 }
 
 getLatestData();
-setInterval(updateTimeAgo, 1000);
+// setInterval(updateTimeAgo, 1000);
