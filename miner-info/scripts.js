@@ -274,16 +274,16 @@ function updateTimeAgo() {
         const createdAt = data[0].created_at;
         const date = new Date(createdAt);
 
-        const offsetDate = new Date(date.getTime() - 5 * 60 * 60 * 1000);
+        const offsetInMinutes = new Date().getTimezoneOffset();
+        const offsetInHours = offsetInMinutes / 60;
 
-        // Convert the offset date to a Unix timestamp
+        const offsetDate = new Date(date.getTime() - offsetInHours * 60 * 60 * 1000);
+
         const unixTimestamp = Math.floor(offsetDate.getTime() / 1000);
 
-        // Calculate the "time ago" in seconds
         const now = Math.floor(Date.now() / 1000);
         const timeAgoInSeconds = now - unixTimestamp;
 
-        // Convert "time ago" into a readable format
         const minutes = Math.floor(timeAgoInSeconds / 60);
         const seconds = timeAgoInSeconds % 60;
 
