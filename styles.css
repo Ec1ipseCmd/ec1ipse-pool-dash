@@ -111,6 +111,28 @@ canvas {
     color: #00aaff;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+}
+
+#getStartedButton {
+    padding: 10px 30px;
+    border-radius: 8px;
+    border: none;
+    background-color: #00e676;
+    color: #121212;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-right: 20px;
+    font-size: 16px;
+}
+
+#getStartedButton:hover {
+    background-color: #00b248;
+    transform: scale(1.05);
+}
+
 .search-container {
     margin-bottom: 0;
     text-align: right;
@@ -141,6 +163,7 @@ canvas {
     color: #121212;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
+    font-size: 16px;
 }
 
 .search-container button:hover {
