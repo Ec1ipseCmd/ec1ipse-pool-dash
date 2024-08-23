@@ -4,6 +4,7 @@ let challengesData = null;
 let activeMinersData = null;
 let difficultyHistogram = null;
 let latestDifficulty = null;
+let difficultyOverTimeChart = null;
 
 async function getLatestMine() {
     const url = 'https://domainexpansion.tech/txns/latest-mine';
@@ -36,6 +37,7 @@ async function getLatestSubmissions() {
         console.log(latestSubmissionsData);
         updateLatestDifficulty();
         updateDifficultyHistogram();
+        updateDifficultyOverTime();
     } catch (error) {
         console.error('Error fetching data:', error);
         throw error;
@@ -111,23 +113,31 @@ function updateTimeAgo() {
 
         if (differenceInSeconds > 80) {
             getLatestData();
-            setTimeout(console.log("Waiting for data..."), 2000);
+            setTimeout(console.log("Waiting for data..."), 5000);
         }
     } else {
         console.error('Element with ID "time-ago" not found or latestMineData is not available.');
     }
 }
 
-function updateLatestHashrateEstimate() {
-    const element = document.getElementById('estimatedHashrate');
+function updateAverageHashrate() {
+    if (!Array.isArray(challengesData) || challengesData.length === 0) {
+        console.warn('No challenge data available.');
+        return;
+    }
 
-    let estimatedPoolHashrate = Math.pow(2, latestDifficulty) / 60;
-    
-    const formattedHashrate = Math.round(estimatedPoolHashrate).toLocaleString();
+    const totalDifficulty = challengesData.reduce((sum, item) => sum + item.difficulty, 0);
+
+    const averageDifficulty = totalDifficulty / challengesData.length;
+
+    const averagePoolHashrate = Math.pow(2, averageDifficulty) / 60;
+
+    const formattedHashrate = Math.round(averagePoolHashrate).toLocaleString();
+
+    const element = document.getElementById('averageHashrate');
 
     element.textContent = `${formattedHashrate} H/s`;
-
-    console.log(estimatedPoolHashrate);
+    console.log(`Average Pool Hashrate: ${formattedHashrate} H/s`);
 }
 
 
@@ -142,7 +152,7 @@ function updateLatestDifficulty() {
     }, 0);
 
     console.log('Latest Pool Difficulty:', latestDifficulty)
-    updateLatestHashrateEstimate();
+    updateAverageHashrate();
 
     const difficultyElement = document.getElementById('latestDifficulty');
     if (difficultyElement) {
@@ -239,6 +249,96 @@ function updateDifficultyHistogram() {
                     ticks: {
                         color: '#fff',
                     }
+                }
+            }
+        }
+    });
+}
+
+function updateDifficultyOverTime() {
+    if (!Array.isArray(challengesData) || challengesData.length === 0) {
+        console.warn('No challenge data available.');
+        return;
+    }
+
+    const difficulties = challengesData.map(item => item.difficulty);
+    const labels = challengesData.map((_, index) => index + 1);
+
+    const interval = 3;
+    const filteredLabels = [];
+    const filteredDifficulties = [];
+
+    for (let i = 0; i < labels.length; i += interval) {
+        filteredLabels.unshift(labels[i]);
+        filteredDifficulties.unshift(difficulties[i]);
+    }
+
+    // Find min and max difficulty for y-axis
+    const minDifficulty = Math.min(...difficulties);
+    const maxDifficulty = Math.max(...difficulties);
+
+    const ctx = document.getElementById('difficultyOverTime').getContext('2d');
+
+    if (difficultyOverTimeChart) {
+        difficultyOverTimeChart.destroy();
+    }
+
+    difficultyOverTimeChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: filteredLabels,
+            datasets: [{
+                label: 'Difficulty',
+                data: filteredDifficulties,
+                backgroundColor: 'rgba(153, 102, 255, 0.2)', 
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 0,
+            }]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Difficulty Over Time (24hr)',
+                    color: '#fff',
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    },
+                    padding: {
+                        top: 10,
+                        bottom: 30
+                    }
+                },
+                tooltip: {
+                    enabled: true
+                },
+                legend: {
+                    display: false,
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: '#fff',
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)',
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#fff',
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)',
+                    },
+                    min: minDifficulty - 1,
+                    max: maxDifficulty + 1
                 }
             }
         }
