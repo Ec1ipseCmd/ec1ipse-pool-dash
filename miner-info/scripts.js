@@ -7,7 +7,9 @@ document.getElementById('minerPubkey').textContent = pubkey;
 const dataUrl = `https://domainexpansion.tech/miner/submissions?pubkey=${encodeURIComponent(pubkey)}`;
 const rewardsUrl = `https://domainexpansion.tech/miner/rewards?pubkey=${encodeURIComponent(pubkey)}`;
 
-let difficultyChart;
+let difficultyChart = null;
+let avgDifficultyChart = null;
+let difficultyCountChart = null;
 
 async function fetchDataAndUpdateCharts() {
     try {
@@ -31,7 +33,9 @@ async function fetchDataAndUpdateCharts() {
         gradientDifficulty.addColorStop(0, 'rgba(0, 255, 127, 0.7)');
         gradientDifficulty.addColorStop(1, 'rgba(0, 255, 127, 0)');
 
-        if (difficultyChart) difficultyChart.destroy();
+        if (difficultyChart) {
+            difficultyChart.destroy();
+        }
 
         difficultyChart = new Chart(ctxDifficulty, {
             type: 'line',
@@ -108,7 +112,11 @@ async function fetchDataAndUpdateCharts() {
         gradientAvgDifficulty.addColorStop(0, 'rgba(255, 99, 132, 0.7)');
         gradientAvgDifficulty.addColorStop(1, 'rgba(255, 99, 132, 0)');
 
-        const avgDifficultyChart = new Chart(ctxAvgDifficulty, {
+        if (avgDifficultyChart) {
+            avgDifficultyChart.destroy();
+        }
+
+        avgDifficultyChart = new Chart(ctxAvgDifficulty, {
             type: 'line',
             data: {
                 labels: labels,
@@ -186,7 +194,11 @@ async function fetchDataAndUpdateCharts() {
         gradientDifficultyCount.addColorStop(0, 'rgba(153, 102, 255, 0.7)');
         gradientDifficultyCount.addColorStop(1, 'rgba(153, 102, 255, 0)');
 
-        const difficultyCountChart = new Chart(ctxDifficultyCount, {
+        if (difficultyCountChart) {
+            difficultyCountChart.destroy();
+        }
+
+        difficultyCountChart = new Chart(ctxDifficultyCount, {
             type: 'bar',
             data: {
                 labels: countLabels,
