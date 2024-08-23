@@ -290,8 +290,6 @@ function updateTimeAgo() {
         const timeAgo = `${minutes}m ${seconds}s ago`;
         document.getElementById('lastSubmittion').textContent = timeAgo
 
-        console.log(timeAgo);
-
         if (timeAgoInSeconds > 120) {
             return
         }
