@@ -35,6 +35,10 @@
                 <h3>Latest Pool Difficulty</h3>
                 <p id="latestDifficulty">Loading...</p>
             </div>
+            <div>
+                <h3>Highest 24hr Pool Difficulty</h3>
+                <p id="highestDayDifficulty">Loading...</p>
+            </div>
         </div>
 
         <h2>Mining Statistics</h2>
@@ -47,15 +51,17 @@
         <h2>Pool Overview</h2>
         <div class="earnings-stats">
             <ul>
-                <li>24hr Pool Earnings: <span id="dayEarnings">Loading...</span> ORE</li>
-                <li>Total Paid Out: <span id="paidOut">Loading...</span> ORE</li>
+                <li>24hr Earnings: <span id="dayEarnings">Loading...</span> ORE</li>
+                <li>Total Stake: <span id="stake">Loading...</span> ORE</li>
+                <li>Total Rewards: <span id="poolRewards">Loading...</span> ORE</li>
+                <li>Total Claimed Rewards: <span id="claimedRewards">Loading...</span> ORE</li>
             </ul>
         </div>
 
         <h2>Entry and Payout Details</h2>
         <div class="block-stats">
             <ul>
-                <li>Entry Fee: 0.001 SOL</li>
+                <li>Signup Fee: 0.001 SOL</li>
                 <li>Payout Cooldown: 30 minutes</li>
                 <li>Pool Fees: 0%</li>
             </ul>
@@ -64,8 +70,8 @@
         <h2>Mining Pool Software Version</h2>
         <div class="block-stats">
             <ul>
-                <li>Ore-HQ-Client Version: v1.3.0</li>
-                <li>Last Update: 5 days ago</li>
+                <li>Latest Client Version: <span id="latestVersion">Loading...</span></li>
+                <li>Last Client Update: <span id="latestVersionUpdate">Loading...</span></li>
             </ul>
         </div>
 
