@@ -4,6 +4,9 @@ let challengesData = null;
 let activeMinersData = null;
 let difficultyHistogram = null;
 let latestDifficulty = null;
+let poolRewardsData = null;
+let poolStakeData = null;
+let clientData = null;
 let difficultyOverTimeChart = null;
 let lastFetchTimestamp = 0;
 
@@ -56,6 +59,7 @@ async function getChallenges() {
         const data = await response.json();
         challengesData = data;
         updateDayEarnings();
+        updatedHighestDayDifficulty();
         console.log(challengesData);
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -81,6 +85,96 @@ async function getActiveMiners() {
     }
 }
 
+async function getPoolRewards() {
+    const url = 'https://domainexpansion.tech/pool';
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        poolRewardsData = data;
+        console.log(poolRewardsData);
+        updatePoolRewards();
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+}
+
+async function getPoolStake() {
+    const url = 'https://domainexpansion.tech/pool/staked';
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        poolStakeData = data;
+        console.log(poolStakeData);
+        updatePoolStake();
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+}
+
+async function getClientData() {
+    const url = 'https://crates.io/api/v1/crates/ore-hq-client';
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        clientData = data;
+        console.log(clientData);
+        updateNewestVersionAndTime();
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+}
+
+function updateNewestVersionAndTime() {
+    const newestVersionElement = document.getElementById('latestVersion');
+    const latestUpdateElement = document.getElementById('latestVersionUpdate');
+
+    if (newestVersionElement && latestUpdateElement && clientData) {
+        const newestVersion = clientData.crate.newest_version;
+        const updatedAtTimestamp = new Date(clientData.crate.updated_at).getTime();
+        console.log(updatedAtTimestamp);
+        const nowTimestamp = Date.now();
+        console.log(nowTimestamp);
+        const timeDifference = nowTimestamp - updatedAtTimestamp;
+
+        let timeAgo;
+
+        const minutes = Math.floor(timeDifference / (1000 * 60));
+        const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+        if (minutes < 60) {
+            timeAgo = `${minutes} minutes ago`;
+        } else if (hours < 24) {
+            timeAgo = `${hours} hours ago`;
+        } else {
+            timeAgo = `${days} days ago`;
+        }
+
+        console.log(timeAgo);
+
+        newestVersionElement.innerHTML = newestVersion;
+        latestUpdateElement.innerHTML = timeAgo;
+    } else {
+        console.error('Element with ID "latestVersion" or "latestVersionUpdate" not found or clientData is not available.');
+    }
+}
+
+
 function updateLatestTransaction() {
     const element = document.getElementById('recent-txn');
     
@@ -93,6 +187,54 @@ function updateLatestTransaction() {
         updateTimeAgo();
     } else {
         console.error('Element with ID "recent-txn" not found or latestMineData is not available.');
+    }
+}
+
+function updatedHighestDayDifficulty() {
+    const element = document.getElementById('highestDayDifficulty');
+
+    if (element && challengesData) {
+        let highestDifficulty = challengesData[0].difficulty;
+
+        challengesData.forEach(challenge => {
+            if (challenge.difficulty > highestDifficulty) {
+                highestDifficulty = challenge.difficulty;
+            }
+        });;
+
+        element.innerHTML = highestDifficulty;
+
+    } else {
+        console.error('Element with ID "highestDayDifficulty" not found or challengesData is not available.');
+    }
+}
+
+function updatePoolStake() {
+    const element = document.getElementById('stake');
+    
+    if (element && poolStakeData) {
+        const stake = poolStakeData / 100000000000;
+
+        element.innerHTML = stake;
+
+    } else {
+        console.error('Element with ID "stake" not found or poolStakeData is not available.');
+    }
+}
+
+function updatePoolRewards() {
+    const rewardsElement = document.getElementById('poolRewards');
+    const rewardsClaimedElement = document.getElementById('claimedRewards');
+    
+    if (rewardsElement && rewardsClaimedElement && poolRewardsData) {
+        const rewards = poolRewardsData.total_rewards/ 100000000000;
+        const claimedRewards = poolRewardsData.claimed_rewards / 100000000000;
+
+        rewardsElement.innerHTML = rewards;
+        rewardsClaimedElement.innerHTML = claimedRewards;
+
+    } else {
+        console.error('Element with ID "poolRewards" or "" not found or poolRewardsData is not available.');
     }
 }
 
@@ -376,6 +518,9 @@ function getLatestData() {
     getLatestSubmissions();
     getChallenges();
     getActiveMiners();
+    getPoolRewards();
+    getPoolStake();
+    getClientData();
 }
 
 getLatestData();
