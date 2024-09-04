@@ -162,7 +162,8 @@ function updatePoolMultiplier() {
     const element = document.getElementById('poolMultiplier');
 
     if (element && stakeData) {
-        element.innerHTML = stakeData;
+        const formattedMultiplier = parseFloat(stakeData).toFixed(2);
+        element.innerHTML = formattedMultiplier;
     } else {
         console.error('Element with ID "poolMultiplier" not found or stakeData is not available.');
     }
