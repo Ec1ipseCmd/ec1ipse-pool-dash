@@ -7,6 +7,7 @@ let latestDifficulty = null;
 let poolRewardsData = null;
 let poolStakeData = null;
 let clientData = null;
+let stakeData = null;
 let difficultyOverTimeChart = null;
 let lastFetchTimestamp = 0;
 
@@ -138,6 +139,36 @@ async function getClientData() {
         throw error;
     }
 }
+
+async function getPoolMultiplier() {
+    const url = 'https://domainexpansion.tech/stake-multiplier';
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        stakeData = data;
+        console.log(stakeData);
+        updatePoolMultiplier();
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+}
+
+function updatePoolMultiplier() {
+    const element = document.getElementById('poolMultiplier');
+
+    if (element && stakeData) {
+        const formattedMultiplier = parseFloat(stakeData).toFixed(2);
+        element.innerHTML = formattedMultiplier;
+    } else {
+        console.error('Element with ID "poolMultiplier" not found or stakeData is not available.');
+    }
+}
+
 
 function updateNewestVersionAndTime() {
     const newestVersionElement = document.getElementById('latestVersion');
@@ -521,6 +552,7 @@ function getLatestData() {
     getPoolRewards();
     getPoolStake();
     getClientData();
+    getPoolMultiplier();
 }
 
 getLatestData();
