@@ -3,19 +3,20 @@ body {
     background-color: #121212;
     color: #e0e0e0;
     padding: 0;
-    margin: 0; /* Ensure no margin is applied to body */
+    margin: 0;
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Make sure the body takes at least the full height of the viewport */
+    min-height: 100vh;
 }
 
 .container {
-    flex: 1; /* Allow the container to grow and take up remaining space */
+    flex: 1; 
     width: 90%;
     margin: auto;
     padding: 20px;
     padding-bottom: 100px;
+    padding-top: 120px;
 }
 
 .header {
@@ -200,4 +201,37 @@ canvas {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #616161;
+}
+
+.staking-multiplier-banner {
+    position: fixed;
+    top: 0;
+    left: 0; 
+    width: 100%;
+    background: linear-gradient(145deg, #1e1e1e, #121212); 
+    color: #e0e0e0;
+    text-align: center;
+    padding: 20px;
+    border-radius: 0;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    border-bottom: 2px solid #00e676;
+}
+
+.staking-multiplier-banner h2 {
+    font-size: 30px;
+    margin: 0;
+    font-weight: bold;
+    color: #00e676;
+}
+
+.staking-multiplier-banner h2 span {
+    font-weight: bold;
+    font-size: 34px;
+}
+
+.staking-multiplier-banner p {
+    margin: 5px 0 0;
+    font-size: 16px;
+    color: #e0e0e0;
 }
