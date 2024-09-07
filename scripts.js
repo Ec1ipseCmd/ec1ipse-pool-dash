@@ -460,48 +460,51 @@ function updateDifficultyOverTime() {
         return;
     }
 
-    const difficulties = challengesData.map(item => item.difficulty);
-    const labels = challengesData.map((_, index) => index + 1);
+    // Count the occurrences of each difficulty
+    const difficultyCounts = {};
+    challengesData.forEach(item => {
+        const difficulty = item.difficulty;
+        if (difficultyCounts[difficulty]) {
+            difficultyCounts[difficulty]++;
+        } else {
+            difficultyCounts[difficulty] = 1;
+        }
+    });
 
-    const interval = 3;
-    const filteredLabels = [];
-    const filteredDifficulties = [];
-
-    for (let i = 0; i < labels.length; i += interval) {
-        filteredLabels.unshift(labels[i]);
-        filteredDifficulties.unshift(difficulties[i]);
-    }
-
-    // Find min and max difficulty for y-axis
-    const minDifficulty = Math.min(...difficulties);
-    const maxDifficulty = Math.max(...difficulties);
+    // Get difficulties and their counts
+    const difficulties = Object.keys(difficultyCounts);
+    const counts = difficulties.map(difficulty => difficultyCounts[difficulty]);
 
     const ctx = document.getElementById('difficultyOverTime').getContext('2d');
 
+    // Destroy the previous chart if it exists
     if (difficultyOverTimeChart) {
         difficultyOverTimeChart.destroy();
     }
 
+    // Create a gradient background
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(153, 102, 255, 0.7)');
+    gradient.addColorStop(1, 'rgba(153, 102, 255, 0)');
+
+    // Create a new histogram chart
     difficultyOverTimeChart = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
-            labels: filteredLabels,
+            labels: difficulties,
             datasets: [{
-                label: 'Difficulty',
-                data: filteredDifficulties,
-                backgroundColor: 'rgba(153, 102, 255, 0.2)', 
+                label: 'Difficulty Count',
+                data: counts,
+                backgroundColor: gradient,
                 borderColor: 'rgba(153, 102, 255, 1)',
                 borderWidth: 2,
-                fill: true,
-                tension: 0.4,
-                pointRadius: 0,
             }]
         },
         options: {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Difficulty Over Time (24hr)',
+                    text: 'Pool Submission Difficulty Histogram (24hr)',
                     color: '#fff',
                     font: {
                         size: 16,
@@ -516,28 +519,26 @@ function updateDifficultyOverTime() {
                     enabled: true
                 },
                 legend: {
-                    display: false,
+                    display: false
                 }
             },
             scales: {
-                x: {
-                    ticks: {
-                        color: '#fff',
-                    },
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)',
-                    }
-                },
                 y: {
                     beginAtZero: true,
-                    ticks: {
-                        color: '#fff',
-                    },
                     grid: {
                         color: 'rgba(255, 255, 255, 0.1)',
                     },
-                    min: minDifficulty - 1,
-                    max: maxDifficulty + 1
+                    ticks: {
+                        color: '#fff',
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)',
+                    },
+                    ticks: {
+                        color: '#fff',
+                    }
                 }
             }
         }
