@@ -1,6 +1,7 @@
 const urlParams = new URLSearchParams(window.location.search);
 const pubkey = urlParams.get('pubkey');
 let data = null;
+let lastFetchTimestamp = 0;
 
 document.getElementById('minerPubkey').textContent = pubkey;
 
@@ -282,37 +283,34 @@ async function fetchDataAndUpdateCharts() {
 }
 
 function updateTimeAgo() {
-    if (data.length > 0) {
-        const createdAt = data[0].created_at;
-        const date = new Date(createdAt);
+  const element = document.getElementById('lastSubmittion');
+  
+  if (element && data) {
+      const createdAt = data[0].created_at;
+      const date = new Date(createdAt);
 
-        const offsetInMinutes = new Date().getTimezoneOffset();
-        const offsetInHours = offsetInMinutes / 60;
+      const offsetInMinutes = new Date().getTimezoneOffset();
+      const offsetInHours = offsetInMinutes / 60;
 
-        const offsetDate = new Date(date.getTime() - offsetInHours * 60 * 60 * 1000);
+      const offsetDate = new Date(date.getTime() - offsetInHours * 60 * 60 * 1000);
 
-        const unixTimestamp = Math.floor(offsetDate.getTime() / 1000);
+      const unixTimestamp = Math.floor(offsetDate.getTime() / 1000);
+      const currentTimestamp = Math.floor(Date.now() / 1000);
+      
+      const differenceInSeconds = currentTimestamp - unixTimestamp;
+      const minutes = Math.floor(differenceInSeconds / 60);
+      const seconds = differenceInSeconds % 60;
 
-        const now = Math.floor(Date.now() / 1000);
-        const timeAgoInSeconds = now - unixTimestamp;
+      element.textContent = `${minutes}m ${seconds}s ago`;
 
-        const minutes = Math.floor(timeAgoInSeconds / 60);
-        const seconds = timeAgoInSeconds % 60;
-
-        const timeAgo = `${minutes}m ${seconds}s ago`;
-        document.getElementById('lastSubmittion').textContent = timeAgo
-
-        if (timeAgoInSeconds > 120) {
-            return
-        }
-
-        if (timeAgoInSeconds > 80) {
-            fetchDataAndUpdateCharts();
-            setTimeout(console.log("Waiting for data..."), 5000)
-        }
-    } else {
-        console.warn('No submission data available.');
-    }
+      if (differenceInSeconds > 70 && currentTimestamp - lastFetchTimestamp > 30) {
+          lastFetchTimestamp = currentTimestamp;
+          fetchDataAndUpdateCharts();
+          console.log("Fetching new data...");
+      }
+  } else {
+      console.warn('Element with ID "lastSubmittion" not found or latestMineData is not available.');
+  }
 }
 
 fetchDataAndUpdateCharts();
