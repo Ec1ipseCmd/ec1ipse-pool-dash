@@ -290,7 +290,7 @@ function updateTimeAgo() {
 
         element.textContent = `${minutes}m ${seconds}s ago`;
 
-        if (differenceInSeconds > 80 && currentTimestamp - lastFetchTimestamp > 30) {
+        if (differenceInSeconds > 70 && currentTimestamp - lastFetchTimestamp > 30) {
             lastFetchTimestamp = currentTimestamp;
             getLatestData();
             console.log("Fetching new data...");
