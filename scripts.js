@@ -42,7 +42,6 @@ async function getLatestSubmissions() {
         console.log(latestSubmissionsData);
         updateLatestDifficulty();
         updateDifficultyHistogram();
-        updateDifficultyOverTime();
     } catch (error) {
         console.error('Error fetching data:', error);
         throw error;
@@ -61,6 +60,7 @@ async function getChallenges() {
         challengesData = data;
         updateDayEarnings();
         updatedHighestDayDifficulty();
+        updateDifficultyOverTime();
         console.log(challengesData);
     } catch (error) {
         console.error('Error fetching data:', error);
