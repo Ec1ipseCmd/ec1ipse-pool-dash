@@ -158,6 +158,67 @@ async function getPoolMultiplier() {
     }
 }
 
+async function getStakeOreLegacy() {
+    const url = 'https://domainexpansion.tech/pool/staked';
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const stake = data / 100000000000; // Adjust this if your data is not in this scale
+        document.getElementById('stakeLegacy').innerHTML = stake;
+    } catch (error) {
+        console.error('Error fetching stake ORE Legacy data:', error);
+    }
+}
+
+async function getStakeOreBoosted() {
+    const url = 'https://domainexpansion.tech/pool/staked/ore-boosted';
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const stake = data / 100000000000;
+        document.getElementById('stakeBoost').innerHTML = stake;
+    } catch (error) {
+        console.error('Error fetching stake ORE Boosted data:', error);
+    }
+}
+
+async function getStakeOreSol() {
+    const url = 'https://domainexpansion.tech/pool/staked/ore-sol';
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const stake = data / 100000000000;
+        document.getElementById('stakeOreSol').innerHTML = stake;
+    } catch (error) {
+        console.error('Error fetching stake ORE-SOL data:', error);
+    }
+}
+
+async function getStakeOreIsc() {
+    const url = 'https://domainexpansion.tech/pool/staked/ore-isc';
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const stake = data / 100000000000;
+        document.getElementById('stakeOreIsc').innerHTML = stake;
+    } catch (error) {
+        console.error('Error fetching stake ORE-ISC data:', error);
+    }
+}
+
+
 function updatePoolMultiplier() {
     const element = document.getElementById('poolMultiplier');
 
@@ -551,10 +612,14 @@ function getLatestData() {
     getChallenges();
     getActiveMiners();
     getPoolRewards();
-    getPoolStake();
+    getStakeOreLegacy();
+    getStakeOreBoosted();
+    getStakeOreSol();
+    getStakeOreIsc();
     getClientData();
     getPoolMultiplier();
 }
+
 
 getLatestData();
 setInterval(updateTimeAgo, 1000);

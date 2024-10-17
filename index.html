@@ -5,15 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ec1ipse Mining Pool Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Add styles for the construction banner */
+        .construction-banner {
+    background-color: #6f6f6f;
+    color: #f1f1f1;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    border: 2px solid #555;
+    margin-top: 20px;
+}
+        .construction-banner span {
+            font-size: 1.5em;
+        }
+    </style>
 </head>
 <body>
     <div class="staking-multiplier-banner">
         <h2>Maximize Your Earnings with a <span id="poolMultiplier">Loading...</span>x Staking Multiplier!</h2>
         <p>Earn more with our increased staking rewards!</p>
     </div>
+
+    <!-- Construction Banner -->
+    <div class="construction-banner">
+        <span>🚧</span> We're Under Construction! Some details on this page may be incorrect while we upgrade statistics to the Boosts Staking Contract. <span>🚧</span>
+    </div>
+
     <div class="container">
         <div class="header">
-            <h1>Ec1ipse Mining Pool Dashboard.</h1>
+            <h1>Ec1ipse Mining Pool Dashboard</h1>
             <div class="header-actions">
                 <button id="getStartedButton" onclick="window.open('https://gitbook.ec1ipse.me/', '_blank')">Get Started</button>
                 <div class="search-container">
@@ -56,7 +77,10 @@
         <div class="earnings-stats">
             <ul>
                 <li>24hr Earnings: <span id="dayEarnings">Loading...</span> ORE</li>
-                <li>Total Stake: <span id="stake">Loading...</span> ORE</li>
+                <li>Staked ORE (Legacy): <span id="stakeLegacy">Loading...</span> ORE</li>
+                <!-- <li>Staked ORE (Boost): <span id="stakeBoost">Loading...</span> ORE</li>
+                <li>Staked ORE-SOL LP: <span id="stakeOreSol">Loading...</span> ORE</li>
+                <li>Staked ORE-ISC LP: <span id="stakeOreIsc">Loading...</span> ORE</li> -->
                 <li>Total Rewards: <span id="poolRewards">Loading...</span> ORE</li>
                 <li>Total Claimed Rewards: <span id="claimedRewards">Loading...</span> ORE</li>
             </ul>
@@ -65,8 +89,9 @@
         <h2>Entry and Payout Details</h2>
         <div class="block-stats">
             <ul>
+                <li>Pool Commission: 5%</li>
+                <li>Pool Entry Fee: 0 Sol</li>
                 <li>Payout Cooldown: 30 minutes</li>
-                <li>Pool Fees: 5%</li>
                 <li>Minimum Withdrawal: 0.005 ORE</li>
             </ul>
         </div>
@@ -91,8 +116,18 @@
     </div>
 
     <footer class="footer">
-        <p>Tips for developing this dashboard are appreciated!</p>
-        <p>Solana Address: <a href="https://solscan.io/account/877iwgC44Fi948SrRrUDQg1GSFWnEdmP6QkJxWi4742G" target="_blank"id="solana-address">877iwgC44Fi948SrRrUDQg1GSFWnEdmP6QkJxWi4742G</a></p>
+        <div class="social-links">
+            <a href="https://github.com/Ec1ipseCmd" target="_blank">
+                <img src="images/github.png" alt="" class="social-icon">
+            </a>
+            <a href="https://twitter.com/ec1ipse_sol" target="_blank">
+                <img src="images/twitter.png" alt="" class="social-icon">
+            </a>
+            <a href="https://discord.gg/S6TKPScPPD" target="_blank">
+                <img src="images/discord.png" alt="" class="social-icon">
+            </a>
+        </div>
+        <p>Ec1ipse³</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
