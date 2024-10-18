@@ -7,121 +7,184 @@
     <link rel="stylesheet" href="styles.css">
     <style>
         .construction-banner {
-    background-color: #6f6f6f;
-    color: #f1f1f1;
-    padding: 10px;
-    text-align: center;
-    font-weight: bold;
-    border: 2px solid #555;
-    margin-top: 20px;
-}
-        .construction-banner span {
+            background-color: #6f6f6f;
+            color: #f1f1f1;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            border: 2px solid #555;
+            margin-top: 20px;
             font-size: 1.5em;
+        }
+
+        /* New Styles for Boost Table */
+        #boostTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        #boostTable th, #boostTable td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+
+        #boostTable th {
+            background-color: #1e1e1e;
+            color: #00e676;
+        }
+
+        #boostTable tr:nth-child(even) {
+            background-color: #121212;
+        }
+
+        #boostTable tr:hover {
+            background-color: #2a2a2a;
+        }
+
+        #boostTable a {
+            color: #00bfff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        #boostTable a:hover {
+            color: #00aaff;
         }
     </style>
 </head>
 <body>
     <div class="staking-multiplier-banner">
-        <h2>Maximize Your Earnings with a <span id="poolMultiplier">Loading...</span>x Staking Multiplier!</h2>
+        <h2>Maximize Your Earnings with a <span id="poolMultiplier" class="stat-number">Loading...</span>x Staking Multiplier!</h2>
         <p>Earn more with our increased staking rewards!</p>
     </div>
 
     <div class="construction-banner">
-        <span>🚧</span> We're Under Construction! Some details on this page may be incorrect while we upgrade statistics to the Boosts Staking Contract. <span>🚧</span>
+        🚧 We're Under Construction! Some details on this page may be incorrect while we upgrade statistics to the Boosts Staking Contract. 🚧
     </div>
+    
     <div class="container">
-        <div class="header">
+        <header class="header">
             <h1>Ec1ipse Mining Pool Dashboard</h1>
             <div class="header-actions">
                 <button id="getStartedButton" onclick="window.open('https://gitbook.ec1ipse.me/', '_blank')">Get Started</button>
-                <div class="search-container">
-                    <form id="searchForm" action="miner-info/miner" target="_blank" method="get">
-                        <input type="text" name="pubkey" id="pubkey" placeholder="Enter Miner Public Key" required>
-                        <button type="submit">Search</button>
-                    </form>
+                <form id="searchForm" action="miner-info/miner" target="_blank" method="get" class="search-container">
+                    <input type="text" name="pubkey" id="pubkey" placeholder="Enter Miner Public Key" required>
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+        </header>
+
+        <section>
+            <h2>General Pool Statistics</h2>
+            <div class="stats-grid">
+                <div>
+                    <h3 class="stat-label">Average Pool Hashrate (24hr)</h3>
+                    <p id="averageHashrate" class="stat-number">Loading...</p>
+                </div>
+                <div>
+                    <h3 class="stat-label">Total Active Miners</h3>
+                    <p id="activeMiners" class="stat-number">Loading...</p>
+                </div>
+                <div>
+                    <h3 class="stat-label">Latest Pool Difficulty</h3>
+                    <p id="latestDifficulty" class="stat-number">Loading...</p>
+                </div>
+                <div>
+                    <h3 class="stat-label">Highest 24hr Pool Difficulty</h3>
+                    <p id="highestDayDifficulty" class="stat-number">Loading...</p>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <h2>General Pool Statistics</h2>
-        <div class="stats-grid">
-            <div>
-                <h3>Average Pool Hashrate (24hr)</h3>
-                <p id="averageHashrate">Loading...</p>
+        <section>
+            <h2>Mining Statistics</h2>
+            <div class="mining-stats">
+                <ul>
+                    <li id="recent-txn">Loading...</li>
+                </ul>
             </div>
-            <div>
-                <h3>Total Active Miners</h3>
-                <p id="activeMiners">Loading...</p>
-            </div>
-            <div>
-                <h3>Latest Pool Difficulty</h3>
-                <p id="latestDifficulty">Loading...</p>
-            </div>
-            <div>
-                <h3>Highest 24hr Pool Difficulty</h3>
-                <p id="highestDayDifficulty">Loading...</p>
-            </div>
-        </div>
+        </section>
 
-        <h2>Mining Statistics</h2>
-        <div class="mining-stats">
-            <ul>
-                <li id="recent-txn">Loading...</li>
-            </ul>
-        </div>
+        <section>
+            <h2>Reward Overview</h2>
+            <div class="earnings-stats">
+                <ul>
+                    <li>24hr Earnings: <span class="stat-number" id="dayEarnings">Loading...</span> ORE</li>
+                    <li>Total Rewards: <span class="stat-number" id="poolRewards">Loading...</span> ORE</li>
+                    <li>Total Claimed Rewards: <span class="stat-number" id="claimedRewards">Loading...</span> ORE</li>
+                    <li>Total Legacy Stake: <span class="stat-number" id="legacyStake">Loading...</span> ORE</li>
 
-        <h2>Pool Overview</h2>
-        <div class="earnings-stats">
-            <ul>
-                <li>24hr Earnings: <span id="dayEarnings">Loading...</span> ORE</li>
-                <li>Staked ORE (Legacy): <span id="stakeLegacy">Loading...</span> ORE</li>
-                <!-- <li>Staked ORE (Boost): <span id="stakeBoost">Loading...</span> ORE</li>
-                <li>Staked ORE-SOL LP: <span id="stakeOreSol">Loading...</span> ORE</li>
-                <li>Staked ORE-ISC LP: <span id="stakeOreIsc">Loading...</span> ORE</li> -->
-                <li>Total Rewards: <span id="poolRewards">Loading...</span> ORE</li>
-                <li>Total Claimed Rewards: <span id="claimedRewards">Loading...</span> ORE</li>
-            </ul>
-        </div>
-
-        <h2>Entry and Payout Details</h2>
-        <div class="block-stats">
-            <ul>
-                <li>Pool Commission: 5%</li>
-                <li>Pool Entry Fee: 0 Sol</li>
-                <li>Payout Cooldown: 30 minutes</li>
-                <li>Minimum Withdrawal: 0.005 ORE</li>
-            </ul>
-        </div>
-
-        <h2>Mining Pool Software Version</h2>
-        <div class="block-stats">
-            <ul>
-                <li>Latest Client Version: <span id="latestVersion">Loading...</span></li>
-                <li>Last Client Update: <span id="latestVersionUpdate">Loading...</span></li>
-            </ul>
-        </div>
-
-        <h2>Visualizations</h2>
-        <div class="chart-row">
-            <div class="chart-container">
-                <canvas id="difficultyHistogram"></canvas>
+                </ul>
             </div>
-            <div class="chart-container">
-                <canvas id="difficultyOverTime"></canvas>
+        </section>
+
+        <section>
+            <h2>Boost Overview</h2>
+            <div class="stake-stats">
+                <!-- New Boost Multipliers Table -->
+                <table id="boostTable">
+                    <thead>
+                        <tr>
+                            <th>Boost Name</th>
+                            <th>Staked Balance (ORE)</th>
+                            <th>Total Stake Balance (ORE)</th>
+                            <th>Percentage of Total Stake (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows will be populated by scripts.js -->
+                    </tbody>
+                </table>
             </div>
-        </div>
+        </section>
+
+        <section>
+            <h2>Entry and Payout Details</h2>
+            <div class="block-stats">
+                <ul>
+                    <li>Pool Commission: 5%</li>
+                    <li>Pool Entry Fee: 0 Sol</li>
+                    <li>Payout Cooldown: 30 minutes</li>
+                    <li>Minimum Withdrawal: 0.005 ORE</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Mining Pool Software Version</h2>
+            <div class="block-stats">
+                <ul>
+                    <li>Latest Client Version: <span class="stat-number" id="latestVersion">Loading...</span></li>
+                    <li>Last Client Update: <span class="stat-number" id="latestVersionUpdate">Loading...</span></li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Visualizations</h2>
+            <div class="chart-row">
+                <div class="chart-container">
+                    <canvas id="difficultyHistogram"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="difficultyOverTime"></canvas>
+                </div>
+            </div>
+        </section>
     </div>
 
     <footer class="footer">
         <div class="social-links">
-            <a href="https://github.com/Ec1ipseCmd" target="_blank">
-                <img src="images/github.png" alt="" class="social-icon">
+            <a href="https://github.com/Ec1ipseCmd" target="_blank" aria-label="GitHub">
+                <img src="images/github.png" alt="GitHub" class="social-icon">
             </a>
-            <a href="https://twitter.com/ec1ipse_sol" target="_blank">
-                <img src="images/twitter.png" alt="" class="social-icon">
+            <a href="https://twitter.com/ec1ipse_sol" target="_blank" aria-label="Twitter">
+                <img src="images/twitter.png" alt="Twitter" class="social-icon">
             </a>
-            <a href="https://discord.gg/S6TKPScPPD" target="_blank">
-                <img src="images/discord.png" alt="" class="social-icon">
+            <a href="https://discord.gg/S6TKPScPPD" target="_blank" aria-label="Discord">
+                <img src="images/discord.png" alt="Discord" class="social-icon">
             </a>
         </div>
         <p>Ec1ipse³</p>
@@ -131,11 +194,10 @@
     <script src="scripts.js"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8QHK6CFTFS"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-8QHK6CFTFS');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-8QHK6CFTFS');
     </script>
 </body>
 </html>

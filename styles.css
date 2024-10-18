@@ -1,23 +1,25 @@
+/* Base Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #121212;
     color: #e0e0e0;
-    padding: 0;
     margin: 0;
-    overflow-y: scroll;
+    padding: 0;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 .container {
-    flex: 1; 
+    flex: 1;
     width: 90%;
     margin: auto;
-    padding: 20px;
-    padding-bottom: 100px;
     padding-top: 120px;
+    padding-bottom: 100px;
+    padding-left: 20px;
+    padding-right: 20px;
     overflow-x: hidden;
 }
 
@@ -32,8 +34,21 @@ body {
 
 h1, h2 {
     color: #e0e0e0;
+    margin: 0 0 10px 0;
+}
+
+h3.stat-label {
+    color: #b0b0b0; /* Lighter color for labels */
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.stat-number {
+    /* Removed color property to inherit from parent */
+    font-size: 1.2em;
+    color: #e0e0e0;
+    font-weight: bold;
     margin: 0;
-    margin-bottom: 10px;
 }
 
 .stats-grid {
@@ -51,33 +66,26 @@ h1, h2 {
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
 }
 
-.mining-stats, .earnings-stats {
+.mining-stats,
+.earnings-stats,
+.stake-stats,
+.block-stats {
     margin-bottom: 30px;
 }
 
-.mining-stats ul, .earnings-stats ul {
+.mining-stats ul,
+.earnings-stats ul,
+.stake-stats ul,
+.block-stats ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
 }
 
-.mining-stats li, .earnings-stats li {
-    background: linear-gradient(145deg, #1e1e1e, #121212);
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 12px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-.mining-stats, .stake-stats {
-    margin-bottom: 30px;
-}
-
-.mining-stats ul, .stake-stats ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.mining-stats li, .stake-stats li {
+.mining-stats li,
+.earnings-stats li,
+.stake-stats li,
+.block-stats li {
     background: linear-gradient(145deg, #1e1e1e, #121212);
     padding: 10px;
     margin-bottom: 10px;
@@ -96,7 +104,7 @@ h1, h2 {
     justify-content: space-between;
 }
 
-.chart-item {
+.chart-container {
     flex: 1;
 }
 
@@ -118,30 +126,35 @@ canvas {
     color: #00aaff;
 }
 
+/* Header Actions */
 .header-actions {
     display: flex;
     align-items: center;
 }
 
-#getStartedButton {
+#getStartedButton,
+.search-container button {
     padding: 10px 30px;
     border-radius: 8px;
     border: none;
     background-color: #00e676;
     color: #121212;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    margin-right: 20px;
     font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
-#getStartedButton:hover {
+#getStartedButton {
+    margin-right: 20px;
+}
+
+#getStartedButton:hover,
+.search-container button:hover {
     background-color: #00b248;
     transform: scale(1.05);
 }
 
 .search-container {
-    margin-bottom: 0;
     text-align: right;
 }
 
@@ -162,27 +175,12 @@ canvas {
     outline: none;
 }
 
-.search-container button {
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: none;
-    background-color: #00e676;
-    color: #121212;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    font-size: 16px;
-}
-
-.search-container button:hover {
-    background-color: #00b248;
-    transform: scale(1.05);
-}
-
+/* Footer Styles */
 .footer {
     background: #1e1e1e;
     color: #e0e0e0;
     text-align: center;
-    padding: 5px;
+    padding: 5px 0;
     border-top: 2px solid #00e676;
     position: relative;
     bottom: 0;
@@ -216,7 +214,11 @@ canvas {
     transition: transform 0.3s;
 }
 
+.social-icon:hover {
+    transform: scale(1.1);
+}
 
+/* Scrollbar Styles */
 ::-webkit-scrollbar-track {
     background: #1e1e1e;
     border-radius: 8px;
@@ -232,16 +234,16 @@ canvas {
     background: #616161;
 }
 
+/* Staking Multiplier Banner */
 .staking-multiplier-banner {
-    position: relative;
+    position: fixed; /* Keep banner fixed */
     top: 0;
-    left: 0; 
+    left: 0;
     width: 100%;
-    background: linear-gradient(145deg, #1e1e1e, #121212); 
+    background: linear-gradient(145deg, #1e1e1e, #121212);
     color: #e0e0e0;
     text-align: center;
     padding: 20px;
-    border-radius: 0;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     z-index: 1000;
     border-bottom: 2px solid #00e676;
@@ -251,16 +253,53 @@ canvas {
     font-size: 30px;
     margin: 0;
     font-weight: bold;
-    color: #00e676;
+    color: #00e676; /* Preserved green color for the header text */
 }
 
-.staking-multiplier-banner h2 span {
-    font-weight: bold;
+.staking-multiplier-banner .stat-number {
+    /* Removed color property to inherit from parent */
     font-size: 34px;
+    font-weight: bold; /* Ensures numbers are bold */
 }
 
 .staking-multiplier-banner p {
-    margin: 5px 0 0;
+    margin: 5px 0 0 0;
     font-size: 16px;
     color: #e0e0e0;
+}
+
+/* New Styles for Boost Table */
+#boostTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#boostTable th, #boostTable td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+
+#boostTable th {
+    background-color: #1e1e1e;
+    color: #00e676;
+}
+
+#boostTable tr:nth-child(even) {
+    background-color: #121212;
+}
+
+#boostTable tr:hover {
+    background-color: #2a2a2a;
+}
+
+#boostTable a {
+    color: #00bfff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+#boostTable a:hover {
+    color: #00aaff;
 }
