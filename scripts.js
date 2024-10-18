@@ -71,9 +71,11 @@ async function getChallenges() {
         }
         const data = await response.json();
         challengesData = data;
+        updateAverageHashrate();
         updateDayEarnings();
         updateHighestDayDifficulty();
         updateDifficultyOverTime();
+        
         console.log(challengesData);
     } catch (error) {
         console.error('Error fetching challenges data:', error);
@@ -128,7 +130,7 @@ async function getStakeOreLegacy() {
         poolStakeData = data;
         console.log('Legacy Stake Data:', poolStakeData);
         legacyStakeData = poolStakeData;
-        renderBoostTable();
+        updatePoolRewards();
     } catch (error) {
         console.error('Error fetching Staked ORE (Legacy) data:', error);
     }
@@ -190,7 +192,7 @@ async function getBoostMultipliers() {
 // Function to render the Boost Overview table
 function renderBoostTable() {
     // Ensure both Boost Multipliers and Legacy Stake data are available
-    if (!boostMultipliersData || !legacyStakeData) {
+    if (!boostMultipliersData) {
         return; // Wait until both datasets are fetched
     }
 
@@ -253,6 +255,7 @@ function updatePoolMultiplier() {
     if (element && stakeData) {
         var formattedMultiplier = stakeData;
         if (boostMultipliersData != null){
+            console.log("boostMultiplierDatas ", boostMultipliersData)
             const oreoBoost = boostMultipliersData[0].multiplier * boostMultipliersData[0].staked_balance / boostMultipliersData[0].total_stake_balance;
             const oresolBoost = boostMultipliersData[1].multiplier * boostMultipliersData[1].staked_balance / boostMultipliersData[1].total_stake_balance;
             const oreiscBoost = boostMultipliersData[2].multiplier * boostMultipliersData[2].staked_balance / boostMultipliersData[2].total_stake_balance;
@@ -341,10 +344,12 @@ function updatePoolRewards() {
         const rewards = poolRewardsData.total_rewards / 100000000000;
         const claimedRewards = poolRewardsData.claimed_rewards / 100000000000;
 
-        const legacyStakeNumber = typeof legacyStakeData === 'number' ? legacyStakeData : parseFloat(legacyStakeData);
-        // **Scale the value by dividing by 100000000000**
-        const scaledLegacyStake = legacyStakeNumber / 100000000000;
-        legacyStakeElement.innerHTML = formatNumber(scaledLegacyStake);
+        if (legacyStakeData != null){
+            const legacyStakeNumber = typeof legacyStakeData === 'number' ? legacyStakeData : parseFloat(legacyStakeData);
+            // **Scale the value by dividing by 100000000000**
+            const scaledLegacyStake = legacyStakeNumber / 100000000000;
+            legacyStakeElement.innerHTML = scaledLegacyStake;
+        }
 
         rewardsElement.innerHTML = formatNumber(rewards);
         rewardsClaimedElement.innerHTML = formatNumber(claimedRewards);
@@ -418,7 +423,6 @@ function updateLatestDifficulty() {
     }, 0);
 
     console.log('Latest Pool Difficulty:', latestDifficulty)
-    updateAverageHashrate();
 
     const difficultyElement = document.getElementById('latestDifficulty');
     if (difficultyElement) {
