@@ -32,7 +32,19 @@ body {
     margin-bottom: 30px;
 }
 
-h1, h2 {
+.header h1 {
+    color: #e0e0e0;
+    margin: 0;
+    font-size: 2em;
+    text-align: left;
+}
+
+.header,
+.header-actions {
+    transition: all 0.3s ease;
+}
+
+h2 {
     color: #e0e0e0;
     margin: 0 0 10px 0;
 }
@@ -102,6 +114,7 @@ h3.stat-label {
 .chart-row {
     display: flex;
     justify-content: space-between;
+    
 }
 
 .chart-container {
@@ -268,14 +281,15 @@ canvas {
     color: #e0e0e0;
 }
 
-/* New Styles for Boost Table */
+/* Tables */
 #boostTable {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
 
-#boostTable th, #boostTable td {
+#boostTable th,
+#boostTable td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #333;
@@ -302,4 +316,99 @@ canvas {
 
 #boostTable a:hover {
     color: #00aaff;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    /* Existing responsive styles... */
+
+    .container {
+        width: 95%;
+        padding-top: 150px; /* Increase padding to account for fixed banner */
+        padding-left: 10px; /* Reduce horizontal padding */
+        padding-right: 10px; /* Reduce horizontal padding */
+    }
+
+    .header {
+        flex-direction: column; /* Stack elements vertically */
+        align-items: center; /* Center align items */
+        text-align: center; /* Center text within the header */
+    }
+
+    .header-actions {
+        flex-direction: column; /* Stack header actions vertically */
+        align-items: center; /* Center align header actions */
+        width: 100%;
+    }
+
+    #getStartedButton,
+    .search-container {
+        width: 100%;
+        max-width: 300px;
+        margin: 5px 0;
+    }
+
+    .search-container input {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    /* **Added to center the search button under the text field** */
+    .search-container {
+        text-align: center; /* Override to center elements */
+    }
+
+    .search-container button {
+        width: 100%; /* Make the button full width */
+        max-width: 300px; /* Match the input field's max width */
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr; /* Single column layout on mobile */
+    }
+
+    .chart-row {
+        flex-direction: column; /* Stack charts vertically */
+    }
+
+    canvas {
+        height: 300px; /* Increase chart height for better visibility */
+    }
+
+    .staking-multiplier-banner h2 {
+        font-size: 24px; /* Reduce font size for smaller screens */
+    }
+
+    .staking-multiplier-banner .stat-number {
+        font-size: 28px; /* Adjust stat number size */
+    }
+
+    .staking-multiplier-banner p {
+        font-size: 14px; /* Adjust paragraph font size */
+    }
+
+    .construction-banner {
+        font-size: 1.2em; /* Slightly smaller font on mobile */
+    }
+
+    /* Additional Centering for Header Title */
+    .header h1 {
+        text-align: center; /* Center the header title */
+        width: 100%; /* Ensure the title takes full width */
+        margin-bottom: 15px; /* Add space below the title */
+    }
+
+    /* Ensure buttons and input fields are properly centered */
+    .header-actions button,
+    .header-actions .search-container button {
+        margin: 10px 0;
+    }
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    margin-top: 20px;
 }

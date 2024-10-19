@@ -5,54 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ec1ipse Mining Pool Dashboard</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .construction-banner {
-            background-color: #6f6f6f;
-            color: #f1f1f1;
-            padding: 10px;
-            text-align: center;
-            font-weight: bold;
-            border: 2px solid #555;
-            margin-top: 20px;
-            font-size: 1.5em;
-        }
-
-        /* New Styles for Boost Table */
-        #boostTable {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        #boostTable th, #boostTable td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #333;
-        }
-
-        #boostTable th {
-            background-color: #1e1e1e;
-            color: #00e676;
-        }
-
-        #boostTable tr:nth-child(even) {
-            background-color: #121212;
-        }
-
-        #boostTable tr:hover {
-            background-color: #2a2a2a;
-        }
-
-        #boostTable a {
-            color: #00bfff;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        #boostTable a:hover {
-            color: #00aaff;
-        }
-    </style>
 </head>
 <body>
     <div class="staking-multiplier-banner">
@@ -60,10 +12,7 @@
         <p>Earn more with our increased boosted rewards!</p>
     </div>
 
-    <div class="construction-banner">
-        🚧 We're Under Construction! Some details on this page may be incorrect while we upgrade statistics to the Boosts Staking Contract. 🚧
-    </div>
-    
+    <br>
     <div class="container">
         <header class="header">
             <h1>Ec1ipse Mining Pool Dashboard</h1>
@@ -79,19 +28,19 @@
         <section>
             <h2>General Pool Statistics</h2>
             <div class="stats-grid">
-                <div>
+                <div class="stat-card">
                     <h3 class="stat-label">Average Pool Hashrate (24hr)</h3>
                     <p id="averageHashrate" class="stat-number">Loading...</p>
                 </div>
-                <div>
+                <div class="stat-card">
                     <h3 class="stat-label">Total Active Miners</h3>
                     <p id="activeMiners" class="stat-number">Loading...</p>
                 </div>
-                <div>
+                <div class="stat-card">
                     <h3 class="stat-label">Latest Pool Difficulty</h3>
                     <p id="latestDifficulty" class="stat-number">Loading...</p>
                 </div>
-                <div>
+                <div class="stat-card">
                     <h3 class="stat-label">Highest 24hr Pool Difficulty</h3>
                     <p id="highestDayDifficulty" class="stat-number">Loading...</p>
                 </div>
@@ -115,7 +64,6 @@
                     <li>Total Rewards: <span class="stat-number" id="poolRewards">Loading...</span> ORE</li>
                     <li>Total Claimed Rewards: <span class="stat-number" id="claimedRewards">Loading...</span> ORE</li>
                     <li>Total Legacy Stake: <span class="stat-number" id="legacyStake">Loading...</span> ORE</li>
-
                 </ul>
             </div>
         </section>
@@ -123,22 +71,25 @@
         <section>
             <h2>Boost Overview</h2>
             <div class="stake-stats">
-                <!-- New Boost Multipliers Table -->
-                <table id="boostTable">
-                    <thead>
-                        <tr>
-                            <th>Boost Name</th>
-                            <th>Staked Balance (ORE)</th>
-                            <th>Total Stake Balance (ORE)</th>
-                            <th>Percentage of Total Stake (%)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Rows will be populated by scripts.js -->
-                    </tbody>
-                </table>
+                <!-- Responsive Table Wrapper -->
+                <div class="table-responsive">
+                    <table id="boostTable">
+                        <thead>
+                            <tr>
+                                <th>Boost Name</th>
+                                <th>Staked Balance (ORE)</th>
+                                <th>Total Stake Balance (ORE)</th>
+                                <th>Percentage of Total Stake (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
+        
 
         <section>
             <h2>Entry and Payout Details</h2>
