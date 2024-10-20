@@ -14,9 +14,9 @@ body {
 
 .container {
     flex: 1;
-    width: 90%;
+    width: 80%;
     margin: auto;
-    padding-top: 120px;
+    padding-top: 160px;
     padding-bottom: 100px;
     padding-left: 20px;
     padding-right: 20px;
@@ -42,17 +42,21 @@ body {
 .header,
 .header-actions {
     transition: all 0.3s ease;
+    
 }
 
 h2 {
     color: #e0e0e0;
     margin: 0 0 10px 0;
+    padding-right: 160px;
+    
 }
 
 h3.stat-label {
     color: #b0b0b0; /* Lighter color for labels */
     font-size: 1.1em;
     margin-bottom: 5px;
+    padding-right: 160px;
 }
 
 .stat-number {
@@ -388,9 +392,6 @@ canvas {
         font-size: 14px; /* Adjust paragraph font size */
     }
 
-    .construction-banner {
-        font-size: 1.2em; /* Slightly smaller font on mobile */
-    }
 
     /* Additional Centering for Header Title */
     .header h1 {
