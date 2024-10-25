@@ -259,7 +259,7 @@ function updatePoolMultiplier() {
             const oreoBoost = boostMultipliersData[0].multiplier * boostMultipliersData[0].staked_balance / boostMultipliersData[0].total_stake_balance;
             const oresolBoost = boostMultipliersData[1].multiplier * boostMultipliersData[1].staked_balance / boostMultipliersData[1].total_stake_balance;
             const oreiscBoost = boostMultipliersData[2].multiplier * boostMultipliersData[2].staked_balance / boostMultipliersData[2].total_stake_balance;
-            formattedMultiplier = formattedMultiplier + oreoBoost + oresolBoost + oreiscBoost;
+            formattedMultiplier = oreoBoost + oresolBoost + oreiscBoost;
         }
         element.innerHTML = parseFloat(formattedMultiplier).toFixed(2);
     } else {
