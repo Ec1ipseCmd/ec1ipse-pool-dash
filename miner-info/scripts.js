@@ -6,11 +6,18 @@ let lastFetchTimestamp = 0;
 document.getElementById('minerPubkey').textContent = pubkey;
 
 const dataUrl = `https://domainexpansion.tech/miner/submissions?pubkey=${encodeURIComponent(pubkey)}`;
+const apiUrl = `https://ec1ipse.me/v2/miner/boost/stake-accounts?pubkey=${encodeURIComponent(pubkey)}`;
 const rewardsUrl = `https://domainexpansion.tech/miner/rewards?pubkey=${encodeURIComponent(pubkey)}`;
 
 let difficultyChart = null;
 let avgDifficultyChart = null;
 let difficultyCountChart = null;
+
+const tokenLabels = {
+    "oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp": "ORE",
+    "DrSS5RM7zUd9qjUEdDaf31vnDUSbCrMto6mjqTrHFifN": "ORE-SOL",
+    "meUwDp23AaxhiNKaQCyJ2EAF2T4oe1gSkEkGXSRVdZb": "ORE-ISC"
+};
 
 async function fetchDataAndUpdateCharts() {
     try {
@@ -259,21 +266,82 @@ async function fetchDataAndUpdateCharts() {
         console.error('There was a problem with the fetch operation:', error);
         document.getElementById('minerId').textContent = 'No data available';
     }
+}
 
+async function updateRewardsAndStakes() {
+    try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error("Failed to load staked balances.");
+
+        const data = await response.json();
+        console.log("Data received from API:", data);
+
+        const stakedBalancesList = document.getElementById("stakedBalancesList");
+        stakedBalancesList.innerHTML = "";
+
+        let totalStakeRewards = 0; // Initialize total stake rewards
+
+        if (Array.isArray(data) && data.length > 0) {
+            const groupedBalances = data.reduce((acc, item) => {
+                const tokenLabel = tokenLabels[item.mint_pubkey] || "Unknown Token";
+
+                // Convert to float and trim to a max of 11 decimal places, removing trailing zeroes
+                const stakedBalance = (parseFloat(item.staked_balance || 0) / 1e11).toPrecision(11).replace(/\.?0+$/, '');
+                const rewardsBalance = (parseFloat(item.rewards_balance || 0) / 1e11).toPrecision(11).replace(/\.?0+$/, '');
+                
+                totalStakeRewards += parseFloat(rewardsBalance); // Add rewards to total stake rewards
+                
+                if (!acc[tokenLabel]) {
+                    acc[tokenLabel] = { stakedBalance: stakedBalance, rewardsBalances: [] };
+                }
+                acc[tokenLabel].rewardsBalances.push(rewardsBalance);
+                return acc;
+            }, {});
+
+            for (const [token, balances] of Object.entries(groupedBalances)) {
+                const tokenItem = document.createElement("li");
+                tokenItem.innerHTML = `<strong>${balances.stakedBalance}</strong> ${token}`;
+                stakedBalancesList.appendChild(tokenItem);
+
+                const rewardList = document.createElement("ul");
+                balances.rewardsBalances.forEach(reward => {
+                    const rewardItem = document.createElement("li");
+                    rewardItem.textContent = `Stake Rewards: ${reward} ORE`;
+                    rewardList.appendChild(rewardItem);
+                });
+                stakedBalancesList.appendChild(rewardList);
+            }
+        } else {
+            stakedBalancesList.textContent = "No staked balances found.";
+        }
+
+        // Display the total stake rewards
+        const totalStakeRewardsElement = document.getElementById("stakeRewards");
+        if (totalStakeRewardsElement) {
+            totalStakeRewardsElement.textContent = totalStakeRewards.toPrecision(11).replace(/\.?0+$/, '');
+        } else {
+            console.error('Element with ID "stakeRewards" not found in the DOM.');
+        }
+    } catch (error) {
+        console.error("Error fetching staked balances:", error);
+        document.getElementById("stakedBalancesList").textContent = "Error loading staked balances.";
+    }
+
+    // The rest of your existing code for fetching rewards
     try {
         const rewardsResponse = await fetch(rewardsUrl);
-        if (!rewardsResponse.ok) throw new Error('Network response was not ok.');
-        const rewardsData = await rewardsResponse.json();
+        if (!rewardsResponse.ok) throw new Error('Failed to fetch rewards balance.');
 
-        const rewardElement = document.getElementById('claimableRewards');
+        const rewardsData = await rewardsResponse.json();
+        const rewardElement = document.getElementById("claimableRewards");
         if (rewardElement) {
-            rewardElement.textContent = rewardsData;
+            rewardElement.textContent = rewardsData.toPrecision(11).replace(/\.?0+$/, '');
         } else {
             console.error('Element with ID "claimableRewards" not found in the DOM.');
         }
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
-        const rewardElement = document.getElementById('claimableRewards');
+        const rewardElement = document.getElementById("claimableRewards");
         if (rewardElement) {
             rewardElement.textContent = 'No rewards available';
         } else {
@@ -282,37 +350,42 @@ async function fetchDataAndUpdateCharts() {
     }
 }
 
+
 function updateTimeAgo() {
-  const element = document.getElementById('lastSubmittion');
-  
-  if (element && data) {
-      const createdAt = data[0].created_at;
-      const date = new Date(createdAt);
+    const element = document.getElementById('lastSubmission');
+    if (element && data) {
+        const createdAt = data[0].created_at;
+        const date = new Date(createdAt);
 
-      const offsetInMinutes = new Date().getTimezoneOffset();
-      const offsetInHours = offsetInMinutes / 60;
+        const offsetInMinutes = new Date().getTimezoneOffset();
+        const offsetInHours = offsetInMinutes / 60;
 
-      const offsetDate = new Date(date.getTime() - offsetInHours * 60 * 60 * 1000);
+        const offsetDate = new Date(date.getTime() - offsetInHours * 60 * 60 * 1000);
 
-      const unixTimestamp = Math.floor(offsetDate.getTime() / 1000);
-      const currentTimestamp = Math.floor(Date.now() / 1000);
-      
-      const differenceInSeconds = currentTimestamp - unixTimestamp;
-      const minutes = Math.floor(differenceInSeconds / 60);
-      const seconds = differenceInSeconds % 60;
+        const unixTimestamp = Math.floor(offsetDate.getTime() / 1000);
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        
+        const differenceInSeconds = currentTimestamp - unixTimestamp;
+        const minutes = Math.floor(differenceInSeconds / 60);
+        const seconds = differenceInSeconds % 60;
 
-      element.textContent = `${minutes}m ${seconds}s ago`;
+        element.textContent = `${minutes}m ${seconds}s ago`;
 
-      if (differenceInSeconds > 70 && currentTimestamp - lastFetchTimestamp > 30) {
-          lastFetchTimestamp = currentTimestamp;
-          fetchDataAndUpdateCharts();
-          console.log("Fetching new data...");
-      }
-  } else {
-      console.warn('Element with ID "lastSubmittion" not found or latestMineData is not available.');
-  }
+        if (differenceInSeconds > 70 && currentTimestamp - lastFetchTimestamp > 30) {
+            lastFetchTimestamp = currentTimestamp;
+            fetchDataAndUpdateCharts();
+            console.log("Fetching new data...");
+        }
+    } else {
+        console.warn('Element with ID "lastSubmission" not found or latestMineData is not available.');
+    }
 }
+
+document.addEventListener("DOMContentLoaded", async () => {
+    document.getElementById("minerPubkey").textContent = pubkey;
+    await updateRewardsAndStakes();
+});
 
 fetchDataAndUpdateCharts();
 setInterval(fetchDataAndUpdateCharts, 60000);
-setInterval(updateTimeAgo, 1000)
+setInterval(updateTimeAgo, 1000);
