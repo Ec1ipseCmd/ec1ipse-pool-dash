@@ -709,6 +709,7 @@ function renderPieCharts() {
                 },
                 backgroundColor: 'transparent',
                 height: 400,
+                animation: false
             },
             title: {
                 text: tokenName,
@@ -733,7 +734,8 @@ function renderPieCharts() {
                     },
                     borderColor: '#FFFFFF',
                     borderWidth: 1,
-                    shadow: false
+                    shadow: false,
+                    animation: false
                 }
             },
             series: [{

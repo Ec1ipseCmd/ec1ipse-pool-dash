@@ -421,7 +421,7 @@ canvas {
 
 .pie-chart {
     width: 800px;
-    height: 375px;
+    height: 600px;
     background-color: transparent;
     margin: 20px,
     border-radius: 12px;
@@ -431,7 +431,7 @@ canvas {
 
 @media (max-width: 800px) {
     .pie-chart {
-        width: 250px;
-        height: 250px;
+        width: 300px;
+        height: 350px;
     }
 }
