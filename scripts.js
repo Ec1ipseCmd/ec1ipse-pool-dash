@@ -184,6 +184,7 @@ async function getBoostMultipliers() {
         boostMultipliersData = data;
         console.log('Boost Multipliers Data:', boostMultipliersData);
         renderBoostTable();
+        renderPieCharts();
     } catch (error) {
         console.error('Error fetching boost multipliers:', error);
     }
@@ -656,3 +657,107 @@ getLatestData();
 
 // Update the "time ago" every second
 setInterval(updateTimeAgo, 1000);
+
+function getTokenName(boostMint) {
+    const mapping = {
+        'oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp': 'ORE',
+        'DrSS5RM7zUd9qjUEdDaf31vnDUSbCrMto6mjqTrHFifN': 'ORE-SOL LP',
+        'meUwDp23AaxhiNKaQCyJ2EAF2T4oe1gSkEkGXSRVdZb': 'ORE-ISC LP',
+    };
+    return mapping[boostMint] || 'Unknown Token';
+}
+
+function renderPieCharts() {
+    if (!boostMultipliersData) {
+        console.error('Boost multipliers data is not available.');
+        return;
+    }
+    
+    boostMultipliersData.forEach(item => {
+        const tokenName = getTokenName(item.boost_mint);
+        if (tokenName === 'Unknown Token') {
+            return;
+        }
+
+        const yourBalance = parseFloat(item.staked_balance) || 0;
+        const totalBalance = parseFloat(item.total_stake_balance) || 0;
+        const othersBalance = Math.max(totalBalance - yourBalance, 0);
+
+        let containerId = '';
+        switch(item.boost_mint) {
+            case 'oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp':
+                containerId = 'oreChart';
+                break;
+            case 'DrSS5RM7zUd9qjUEdDaf31vnDUSbCrMto6mjqTrHFifN':
+                containerId = 'oresolLpChart';
+                break;
+            case 'meUwDp23AaxhiNKaQCyJ2EAF2T4oe1gSkEkGXSRVdZb':
+                containerId = 'oreiscLpChart';
+                break;
+            default:
+                console.warn(`No container defined for boost_mint: ${item.boost_mint}`);
+                return;
+        }
+
+        Highcharts.chart(containerId, {
+            chart: {
+                type: 'pie',
+                options3d: {
+                    enabled: true,
+                    alpha: 45,
+                    beta: 0
+                },
+                backgroundColor: 'transparent',
+                height: 400,
+            },
+            title: {
+                text: tokenName,
+                y: 65,
+                style: {
+                    color: '#e0e0e0',
+                    fontSize: '20px'
+                },
+            },
+            plotOptions: {
+                pie: {
+                    innerSize: 0,
+                    size: '75%',
+                    depth: 30,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.name}: {point.percentage:.2f} %',
+                        style: {
+                            color: '#b0b0b0',
+                            fontSize: '10px'
+                        }
+                    },
+                    borderColor: '#FFFFFF',
+                    borderWidth: 1,
+                    shadow: false
+                }
+            },
+            series: [{
+                name: 'Staked',
+                data: [
+                    { name: 'Ec1ipse', y: yourBalance, color: '#00e676' },
+                    { name: "Others'", y: othersBalance, color: '#424242' }
+                ]
+            }],
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                style: {
+                    color: '#FFFFFF'
+                },
+                formatter: function() {
+                    const tokenName = this.series.name;
+                    const tokenTitle = getTokenName(item.boost_mint);
+                    const pointName = this.point.name;
+                    const pointValue = this.y;
+                    const pointPercentage = this.point.percentage.toFixed(2);
+                    return `<strong>${tokenName}</strong><br/>${pointName}: ${pointValue} ${tokenTitle} (${pointPercentage}%)`;
+                }
+            },
+            
+        });
+    });
+}

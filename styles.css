@@ -1,4 +1,3 @@
-/* Base Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #121212;
@@ -51,13 +50,12 @@ h2 {
 }
 
 h3.stat-label {
-    color: #b0b0b0; /* Lighter color for labels */
+    color: #b0b0b0;
     font-size: 1.1em;
     margin-bottom: 5px;
 }
 
 .stat-number {
-    /* Removed color property to inherit from parent */
     font-size: 1.2em;
     color: #e0e0e0;
     font-weight: bold;
@@ -71,7 +69,7 @@ h3.stat-label {
     margin-bottom: 30px;
 }
 
-.stats-grid div {
+.stat-card {
     background: linear-gradient(145deg, #1e1e1e, #121212);
     padding: 15px;
     border-radius: 12px;
@@ -140,7 +138,6 @@ canvas {
     color: #00aaff;
 }
 
-/* Header Actions */
 .header-actions {
     display: flex;
     align-items: center;
@@ -189,7 +186,6 @@ canvas {
     outline: none;
 }
 
-/* Footer Styles */
 .footer {
     background: #1e1e1e;
     color: #e0e0e0;
@@ -232,7 +228,6 @@ canvas {
     transform: scale(1.1);
 }
 
-/* Scrollbar Styles */
 ::-webkit-scrollbar-track {
     background: #1e1e1e;
     border-radius: 8px;
@@ -248,9 +243,8 @@ canvas {
     background: #616161;
 }
 
-/* Staking Multiplier Banner */
 .staking-multiplier-banner {
-    position: fixed; /* Keep banner fixed */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -267,13 +261,12 @@ canvas {
     font-size: 30px;
     margin: 0;
     font-weight: bold;
-    color: #00e676; /* Preserved green color for the header text */
+    color: #00e676;
 }
 
 .staking-multiplier-banner .stat-number {
-    /* Removed color property to inherit from parent */
     font-size: 34px;
-    font-weight: bold; /* Ensures numbers are bold */
+    font-weight: bold;
 }
 
 .staking-multiplier-banner p {
@@ -319,31 +312,29 @@ canvas {
     color: #00aaff;
 }
 
-/* Responsive Styles */
 @media (max-width: 768px) {
-    /* Existing responsive styles... */
 
     .container {
         width: 95%;
-        padding-top: 150px; /* Increase padding to account for fixed banner */
-        padding-left: 10px; /* Reduce horizontal padding */
-        padding-right: 10px; /* Reduce horizontal padding */
+        padding-top: 150px; 
+        padding-left: 10px;
+        padding-right: 10px; 
     }
 
     .header {
-        flex-direction: column; /* Stack elements vertically */
-        align-items: center; /* Center align items */
-        text-align: center; /* Center text within the header */
+        flex-direction: column; 
+        align-items: center;
+        text-align: center;
     }
 
     .header-actions {
-        flex-direction: column; /* Stack header actions vertically */
-        align-items: center; /* Center align header actions */
+        flex-direction: column;
+        align-items: center;
         width: 100%;
     }
 
     #getStartedButton,
-    .search-container {
+    .search-container button {
         width: 100%;
         max-width: 300px;
         margin: 5px 0;
@@ -355,66 +346,50 @@ canvas {
         margin-bottom: 10px;
     }
 
-    /* **Added to center the search button under the text field** */
     .search-container {
-        text-align: center; /* Override to center elements */
+        text-align: center;
     }
 
     .search-container button {
-        width: 100%; /* Make the button full width */
-        max-width: 300px; /* Match the input field's max width */
+        width: 100%;
+        max-width: 300px;
     }
 
     .stats-grid {
-        grid-template-columns: 1fr; /* Single column layout on mobile */
+        grid-template-columns: 1fr;
     }
 
     .chart-row {
-        flex-direction: column; /* Stack charts vertically */
+        flex-direction: column;
     }
 
     canvas {
-        height: 300px; /* Increase chart height for better visibility */
+        height: 300px;
     }
 
     .staking-multiplier-banner h2 {
-        font-size: 24px; /* Reduce font size for smaller screens */
+        font-size: 24px;
     }
 
     .staking-multiplier-banner .stat-number {
-        font-size: 28px; /* Adjust stat number size */
+        font-size: 28px;
     }
 
     .staking-multiplier-banner p {
-        font-size: 14px; /* Adjust paragraph font size */
+        font-size: 14px;
     }
 
 
-    /* Additional Centering for Header Title */
     .header h1 {
-        text-align: center; /* Center the header title */
-        width: 100%; /* Ensure the title takes full width */
-        margin-bottom: 15px; /* Add space below the title */
+        text-align: center; 
+        width: 100%; 
+        margin-bottom: 15px; 
     }
 
-    /* Ensure buttons and input fields are properly centered */
     .header-actions button,
     .header-actions .search-container button {
         margin: 10px 0;
     }
-}
-
-.table-responsive {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-    margin-top: 15px;
-}
-
-.boost-overview-actions {
-    display: flex;
-    justify-content: start;
-    margin-bottom: 10px;
 }
 
 #stakeTokensButton {
@@ -426,10 +401,37 @@ canvas {
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s, transform 0.2s;
-    margin-left: 1em;
+    margin-right: 1em;
 }
 
 #stakeTokensButton:hover {
     background-color: #00b248;
     transform: scale(1.05);
+}
+
+.pie-charts-container {
+    display: flex;
+    width: 100%;
+    padding: 0;
+    margin: 0 auto;
+    height: auto;
+    max-height: 500px;
+    overflow: hidden;
+}
+
+.pie-chart {
+    width: 800px;
+    height: 375px;
+    background-color: transparent;
+    margin: 20px,
+    border-radius: 12px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
+    padding: 0;
+}
+
+@media (max-width: 800px) {
+    .pie-chart {
+        width: 250px;
+        height: 250px;
+    }
 }
