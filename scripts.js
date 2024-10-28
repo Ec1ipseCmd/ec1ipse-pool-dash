@@ -192,42 +192,40 @@ async function getBoostMultipliers() {
 
 // Function to render the Boost Overview table
 function renderBoostTable() {
-    // Ensure both Boost Multipliers and Legacy Stake data are available
-    if (!boostMultipliersData) {
-        return; // Wait until both datasets are fetched
-    }
+    if (!boostMultipliersData) return;
 
-    // Get reference to the boost table body
     const boostTableBody = document.querySelector('#boostTable tbody');
-    boostTableBody.innerHTML = ''; // Clear existing rows
+    boostTableBody.innerHTML = '';
 
-    // Iterate over Boost Multipliers and add rows
     boostMultipliersData.forEach(item => {
         let boostName = '';
+        let multiplierText = '';
+
         switch(item.boost_mint) {
             case 'oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp':
-                boostName = 'ORE (16x)';
+                boostName = 'ORE';
+                multiplierText = '(16x - 15% rewards)';
                 break;
             case 'DrSS5RM7zUd9qjUEdDaf31vnDUSbCrMto6mjqTrHFifN':
-                boostName = 'ORE-SOL LP (32x)';
+                boostName = 'ORE-SOL LP';
+                multiplierText = '(32x - 20% rewards)';
                 break;
             case 'meUwDp23AaxhiNKaQCyJ2EAF2T4oe1gSkEkGXSRVdZb':
-                boostName = 'ORE-ISC LP (24x)';
+                boostName = 'ORE-ISC LP';
+                multiplierText = '(24x - 12% rewards)';
                 break;
             default:
                 boostName = `Unknown Boost (${item.boost_mint})`;
                 console.warn(`Unknown boost_mint: ${item.boost_mint}`);
         }
 
-        // Calculate percentage: (staked_balance / total_stake_balance) * 100
         const percentage = ((item.staked_balance / item.total_stake_balance) * 100).toFixed(2);
 
         // Create table row
         const row = document.createElement('tr');
 
-        // Create cells
         const boostCell = document.createElement('td');
-        boostCell.textContent = boostName;
+        boostCell.innerHTML = `${boostName} <span style="font-size: 0.85em; color: rgba(255, 255, 255, 0.35); margin-left: 4px;">${multiplierText}</span>`;
 
         const stakedBalanceCell = document.createElement('td');
         stakedBalanceCell.textContent = formatNumber(item.staked_balance);
@@ -248,6 +246,7 @@ function renderBoostTable() {
         boostTableBody.appendChild(row);
     });
 }
+
 
 // Function to update the staking multiplier display
 function updatePoolMultiplier() {
