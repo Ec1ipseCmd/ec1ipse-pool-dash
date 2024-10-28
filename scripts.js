@@ -206,13 +206,13 @@ function renderBoostTable() {
         let boostName = '';
         switch(item.boost_mint) {
             case 'oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp':
-                boostName = 'ORE Boost';
+                boostName = 'ORE (16x)';
                 break;
             case 'DrSS5RM7zUd9qjUEdDaf31vnDUSbCrMto6mjqTrHFifN':
-                boostName = 'ORE-SOL LP Boost';
+                boostName = 'ORE-SOL LP (32x)';
                 break;
             case 'meUwDp23AaxhiNKaQCyJ2EAF2T4oe1gSkEkGXSRVdZb':
-                boostName = 'ORE-ISC LP Boost';
+                boostName = 'ORE-ISC LP (24x)';
                 break;
             default:
                 boostName = `Unknown Boost (${item.boost_mint})`;
