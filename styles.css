@@ -421,7 +421,7 @@ canvas {
 
 .pie-chart {
     width: 800px;
-    height: 600px;
+    height: 375px;
     background-color: transparent;
     margin: 20px,
     border-radius: 12px;
@@ -433,5 +433,28 @@ canvas {
     .pie-chart {
         width: 300px;
         height: 350px;
+        background-color: transparent;
+        padding: 0;
+    }
+    .pie-charts-container {
+        width: 100%;
+        padding: 0;
+        margin: 0 auto;
+        height: auto;
+        max-height: 400px;
+        overflow: hidden;
+    }
+}
+
+/* Scrollable container for tables on small screens */
+.scrollable-table-container {
+    overflow-x: auto;
+    width: 100%;
+}
+
+/* Maintain table styling for larger screens */
+@media (min-width: 769px) {
+    .scrollable-table-container {
+        overflow-x: hidden;
     }
 }

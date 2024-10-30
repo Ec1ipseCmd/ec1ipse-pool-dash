@@ -18,8 +18,8 @@ let legacyStakeData = null;
 // Helper function to format numbers with 11 decimal places
 function formatNumber(number) {
     return parseFloat(number).toLocaleString(undefined, { 
-        minimumFractionDigits: 11, 
-        maximumFractionDigits: 11 
+        minimumFractionDigits: 3, 
+        maximumFractionDigits: 4 
     });
 }
 
