@@ -204,15 +204,15 @@ function renderBoostTable() {
         switch(item.boost_mint) {
             case 'oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp':
                 boostName = 'ORE';
-                multiplierText = '(16x - 15% rewards)';
+                multiplierText = '(16x - 16% rewards)';
                 break;
             case 'DrSS5RM7zUd9qjUEdDaf31vnDUSbCrMto6mjqTrHFifN':
                 boostName = 'ORE-SOL LP';
-                multiplierText = '(32x - 20% rewards)';
+                multiplierText = '(32x - 24% rewards)';
                 break;
             case 'meUwDp23AaxhiNKaQCyJ2EAF2T4oe1gSkEkGXSRVdZb':
                 boostName = 'ORE-ISC LP';
-                multiplierText = '(24x - 12% rewards)';
+                multiplierText = '(24x - 20% rewards)';
                 break;
             default:
                 boostName = `Unknown Boost (${item.boost_mint})`;
