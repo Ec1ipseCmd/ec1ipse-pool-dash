@@ -402,9 +402,27 @@ canvas {
     font-size: 16px;
     transition: background-color 0.3s, transform 0.2s;
     margin-right: 1em;
+    margin-left: 1em;
 }
 
 #stakeTokensButton:hover {
+    background-color: #00b248;
+    transform: scale(1.05);
+}
+
+#calcButton {
+    padding: 10px 30px;
+    border-radius: 8px;
+    border: none;
+    background-color: #00e676;
+    color: #121212;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-left: 1em;
+}
+
+#calcButton:hover {
     background-color: #00b248;
     transform: scale(1.05);
 }
