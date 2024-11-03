@@ -11,11 +11,9 @@ let stakeData = null;
 let difficultyOverTimeChart = null;
 let lastFetchTimestamp = 0;
 
-// Variables to store fetched data for table rendering
 let boostMultipliersData = null;
 let legacyStakeData = null;
 
-// Helper function to format numbers with 11 decimal places
 function formatNumber(number) {
     return parseFloat(number).toLocaleString(undefined, { 
         minimumFractionDigits: 3, 
@@ -23,7 +21,6 @@ function formatNumber(number) {
     });
 }
 
-// Function to fetch and update the latest mine data
 async function getLatestMine() {
     const url = 'https://domainexpansion.tech/txns/latest-mine';
     
@@ -41,7 +38,6 @@ async function getLatestMine() {
     }
 }
 
-// Function to fetch and update the latest submissions data
 async function getLatestSubmissions() {
     const url = 'https://domainexpansion.tech/last-challenge-submissions';
     
@@ -60,7 +56,6 @@ async function getLatestSubmissions() {
     }
 }
 
-// Function to fetch and update challenges data
 async function getChallenges() {
     const url = 'https://domainexpansion.tech/challenges';
 
@@ -82,7 +77,6 @@ async function getChallenges() {
     }
 }
 
-// Function to fetch and update active miners data
 async function getActiveMiners() {
     const url = 'https://ec1ipse.me/active-miners';
 
@@ -100,7 +94,6 @@ async function getActiveMiners() {
     }
 }
 
-// Function to fetch and update pool rewards data
 async function getPoolRewards() {
     const url = 'https://domainexpansion.tech/pool';
 
@@ -118,7 +111,6 @@ async function getPoolRewards() {
     }
 }
 
-// Function to fetch and update pool stake data (Legacy)
 async function getStakeOreLegacy() {
     const url = 'https://domainexpansion.tech/pool/staked';
     try {
@@ -136,7 +128,6 @@ async function getStakeOreLegacy() {
     }
 }
 
-// Function to fetch and update client data
 async function getClientData() {
     const url = 'https://crates.io/api/v1/crates/ore-hq-client';
 
@@ -154,7 +145,6 @@ async function getClientData() {
     }
 }
 
-// Function to fetch and update pool multiplier data
 async function getPoolMultiplier() {
     const url = 'https://domainexpansion.tech/stake-multiplier';
 
@@ -172,7 +162,6 @@ async function getPoolMultiplier() {
     }
 }
 
-// Function to fetch and update Boost Multipliers
 async function getBoostMultipliers() {
     const url = 'https://domainexpansion.tech/boost-multiplier';
     try {
@@ -190,7 +179,6 @@ async function getBoostMultipliers() {
     }
 }
 
-// Function to render the Boost Overview table
 function renderBoostTable() {
     if (!boostMultipliersData) return;
 
@@ -221,7 +209,6 @@ function renderBoostTable() {
 
         const percentage = ((item.staked_balance / item.total_stake_balance) * 100).toFixed(2);
 
-        // Create table row
         const row = document.createElement('tr');
 
         const boostCell = document.createElement('td');
@@ -236,38 +223,52 @@ function renderBoostTable() {
         const percentageCell = document.createElement('td');
         percentageCell.textContent = `${percentage}%`;
 
-        // Append cells to row
         row.appendChild(boostCell);
         row.appendChild(stakedBalanceCell);
         row.appendChild(totalStakeBalanceCell);
         row.appendChild(percentageCell);
 
-        // Append row to table body
         boostTableBody.appendChild(row);
     });
 }
 
 
-// Function to update the staking multiplier display
 function updatePoolMultiplier() {
     const element = document.getElementById('poolMultiplier');
 
     if (element && stakeData) {
-        var formattedMultiplier = stakeData;
-        if (boostMultipliersData != null){
-            console.log("boostMultiplierDatas ", boostMultipliersData)
-            const oreoBoost = boostMultipliersData[0].multiplier * boostMultipliersData[0].staked_balance / boostMultipliersData[0].total_stake_balance;
-            const oresolBoost = boostMultipliersData[1].multiplier * boostMultipliersData[1].staked_balance / boostMultipliersData[1].total_stake_balance;
-            const oreiscBoost = boostMultipliersData[2].multiplier * boostMultipliersData[2].staked_balance / boostMultipliersData[2].total_stake_balance;
-            formattedMultiplier = oreoBoost + oresolBoost + oreiscBoost;
+        let formattedMultiplier = 0;
+
+        if (boostMultipliersData && Array.isArray(boostMultipliersData)) {
+            console.log("Boost multipliers data:", boostMultipliersData);
+
+            boostMultipliersData.forEach((boost, index) => {
+                const { multiplier, staked_balance, total_stake_balance } = boost;
+
+                console.log(`Boost #${index + 1}: multiplier=${multiplier}, staked_balance=${staked_balance}, total_stake_balance=${total_stake_balance}`);
+
+                if (multiplier && staked_balance && total_stake_balance > 0) {
+                    const contribution = (multiplier * staked_balance) / total_stake_balance;
+                    console.log(`Contribution for boost #${index + 1}: ${contribution.toFixed(4)}`);
+                    formattedMultiplier += contribution;
+                } else {
+                    console.warn(`Invalid data for boost #${index + 1}: Skipping calculation due to missing or zero values.`);
+                }
+            });
+        } else {
+            console.warn("Boost multipliers data is missing or not an array.");
         }
-        element.innerHTML = parseFloat(formattedMultiplier).toFixed(2);
+
+        if (formattedMultiplier < 2.00) {
+            element.innerHTML = "Loading... ";
+        } else {
+            element.innerHTML = formattedMultiplier.toFixed(2);
+        }
     } else {
         console.error('Element with ID "poolMultiplier" not found or stakeData is not available.');
     }
 }
 
-// Function to update the latest client version and update time
 function updateNewestVersionAndTime() {
     const newestVersionElement = document.getElementById('latestVersion');
     const latestUpdateElement = document.getElementById('latestVersionUpdate');
@@ -299,7 +300,6 @@ function updateNewestVersionAndTime() {
     }
 }
 
-// Function to update the latest transaction display
 function updateLatestTransaction() {
     const element = document.getElementById('recent-txn');
     
@@ -315,7 +315,6 @@ function updateLatestTransaction() {
     }
 }
 
-// Function to update the highest day difficulty
 function updateHighestDayDifficulty() {
     const element = document.getElementById('highestDayDifficulty');
 
@@ -334,7 +333,6 @@ function updateHighestDayDifficulty() {
     }
 }
 
-// Function to update the pool rewards display
 function updatePoolRewards() {
     const rewardsElement = document.getElementById('poolRewards');
     const rewardsClaimedElement = document.getElementById('claimedRewards');
@@ -346,7 +344,6 @@ function updatePoolRewards() {
 
         if (legacyStakeData != null){
             const legacyStakeNumber = typeof legacyStakeData === 'number' ? legacyStakeData : parseFloat(legacyStakeData);
-            // **Scale the value by dividing by 100000000000**
             const scaledLegacyStake = legacyStakeNumber / 100000000000;
             legacyStakeElement.innerHTML = scaledLegacyStake;
         }
@@ -358,29 +355,26 @@ function updatePoolRewards() {
     }
 }
 
-// Function to update the "time ago" display for the latest transaction
 function updateTimeAgo() {
     const element = document.getElementById('time-ago');
     
     if (element && latestMineData) {
-        const createdAt = new Date(latestMineData.created_at);
-        const date = new Date(createdAt);
-
-        const offsetInMinutes = new Date().getTimezoneOffset();
-        const offsetInHours = offsetInMinutes / 60;
-
-        const offsetDate = new Date(date.getTime() - offsetInHours * 60 * 60 * 1000);
-
-        const unixTimestamp = Math.floor(offsetDate.getTime() / 1000);
-        const currentTimestamp = Math.floor(Date.now() / 1000);
+        const createdAt = new Date(latestMineData.created_at + 'Z');
+        const currentTimestamp = Date.now();
         
-        const differenceInSeconds = currentTimestamp - unixTimestamp;
+        const differenceInSeconds = Math.floor((currentTimestamp - createdAt.getTime()) / 1000);
+        
+        if (differenceInSeconds < 0) {
+            element.textContent = "Just now";
+            return;
+        }
+        
         const minutes = Math.floor(differenceInSeconds / 60);
         const seconds = differenceInSeconds % 60;
 
         element.textContent = `${minutes}m ${seconds}s ago`;
 
-        if (differenceInSeconds > 70 && currentTimestamp - lastFetchTimestamp > 30) {
+        if (differenceInSeconds > 70 && currentTimestamp - lastFetchTimestamp > 30000) {
             lastFetchTimestamp = currentTimestamp;
             getLatestData();
             console.log("Fetching new data...");
@@ -390,7 +384,6 @@ function updateTimeAgo() {
     }
 }
 
-// Function to update the average pool hashrate
 function updateAverageHashrate() {
     if (!Array.isArray(challengesData) || challengesData.length === 0) {
         console.warn('No challenge data available.');
@@ -411,7 +404,6 @@ function updateAverageHashrate() {
     console.log(`Average Pool Hashrate: ${formattedHashrate} H/s`);
 }
 
-// Function to update the latest difficulty
 function updateLatestDifficulty() {
     if (latestSubmissionsData.length === 0) {
         console.warn('No challenge data available to find the highest difficulty.');
@@ -432,7 +424,6 @@ function updateLatestDifficulty() {
     }
 }
 
-// Function to update the active miners count
 function updateActiveMiners() {
     const element = document.getElementById('activeMiners');
     
@@ -443,7 +434,6 @@ function updateActiveMiners() {
     }
 }
 
-// Function to update the day's earnings
 function updateDayEarnings() {
     const element = document.getElementById('dayEarnings')
 
@@ -463,7 +453,6 @@ function updateDayEarnings() {
     }
 }
 
-// Function to update the difficulty histogram chart
 function updateDifficultyHistogram() {
     const difficultyCounts = {};
 
@@ -546,14 +535,12 @@ function updateDifficultyHistogram() {
     });
 }
 
-// Function to update the difficulty over time chart
 function updateDifficultyOverTime() {
     if (!Array.isArray(challengesData) || challengesData.length === 0) {
         console.warn('No challenge data available.');
         return;
     }
 
-    // Count the occurrences of each difficulty
     const difficultyCounts = {};
     challengesData.forEach(item => {
         const difficulty = item.difficulty;
@@ -564,23 +551,19 @@ function updateDifficultyOverTime() {
         }
     });
 
-    // Get difficulties and their counts
     const difficulties = Object.keys(difficultyCounts);
     const counts = difficulties.map(difficulty => difficultyCounts[difficulty]);
 
     const ctx = document.getElementById('difficultyOverTime').getContext('2d');
 
-    // Destroy the previous chart if it exists
     if (difficultyOverTimeChart) {
         difficultyOverTimeChart.destroy();
     }
 
-    // Create a gradient background
     const gradient = ctx.createLinearGradient(0, 0, 0, 400);
     gradient.addColorStop(0, 'rgba(153, 102, 255, 0.7)');
     gradient.addColorStop(1, 'rgba(153, 102, 255, 0)');
 
-    // Create a new histogram chart
     difficultyOverTimeChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -638,7 +621,6 @@ function updateDifficultyOverTime() {
     });
 }
 
-// Function to fetch all necessary data
 function getLatestData() {
     getLatestMine();
     getLatestSubmissions();
@@ -651,10 +633,8 @@ function getLatestData() {
     getPoolMultiplier();
 }
 
-// Initial data fetch
 getLatestData();
 
-// Update the "time ago" every second
 setInterval(updateTimeAgo, 1000);
 
 function getTokenName(boostMint) {
