@@ -274,25 +274,21 @@ async function updateRewardsAndStakes() {
         if (!response.ok) throw new Error("Failed to load staked balances.");
 
         const data = await response.json();
-        console.log("Data received from API:", data);
-
         const stakedBalancesList = document.getElementById("stakedBalancesList");
         stakedBalancesList.innerHTML = "";
 
-        let totalStakeRewards = 0; // Initialize total stake rewards
+        let totalStakeRewards = 0;
 
         if (Array.isArray(data) && data.length > 0) {
             const groupedBalances = data.reduce((acc, item) => {
                 const tokenLabel = tokenLabels[item.mint_pubkey] || "Unknown Token";
-
-                // Convert to float and trim to a max of 11 decimal places, removing trailing zeroes
                 const stakedBalance = (parseFloat(item.staked_balance || 0) / 1e11).toPrecision(11).replace(/\.?0+$/, '');
                 const rewardsBalance = (parseFloat(item.rewards_balance || 0) / 1e11).toPrecision(11).replace(/\.?0+$/, '');
                 
-                totalStakeRewards += parseFloat(rewardsBalance); // Add rewards to total stake rewards
+                totalStakeRewards += parseFloat(rewardsBalance);
                 
                 if (!acc[tokenLabel]) {
-                    acc[tokenLabel] = { stakedBalance: stakedBalance, rewardsBalances: [] };
+                    acc[tokenLabel] = { stakedBalance, rewardsBalances: [] };
                 }
                 acc[tokenLabel].rewardsBalances.push(rewardsBalance);
                 return acc;
@@ -315,19 +311,15 @@ async function updateRewardsAndStakes() {
             stakedBalancesList.textContent = "No staked balances found.";
         }
 
-        // Display the total stake rewards
         const totalStakeRewardsElement = document.getElementById("stakeRewards");
         if (totalStakeRewardsElement) {
             totalStakeRewardsElement.textContent = totalStakeRewards.toPrecision(11).replace(/\.?0+$/, '');
-        } else {
-            console.error('Element with ID "stakeRewards" not found in the DOM.');
         }
     } catch (error) {
         console.error("Error fetching staked balances:", error);
         document.getElementById("stakedBalancesList").textContent = "Error loading staked balances.";
     }
 
-    // The rest of your existing code for fetching rewards
     try {
         const rewardsResponse = await fetch(rewardsUrl);
         if (!rewardsResponse.ok) throw new Error('Failed to fetch rewards balance.');
@@ -336,33 +328,24 @@ async function updateRewardsAndStakes() {
         const rewardElement = document.getElementById("claimableRewards");
         if (rewardElement) {
             rewardElement.textContent = rewardsData.toPrecision(11).replace(/\.?0+$/, '');
-        } else {
-            console.error('Element with ID "claimableRewards" not found in the DOM.');
         }
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
         const rewardElement = document.getElementById("claimableRewards");
         if (rewardElement) {
             rewardElement.textContent = 'No rewards available';
-        } else {
-            console.error('Element with ID "claimableRewards" not found in the DOM.');
         }
     }
 }
-
 
 function updateTimeAgo() {
     const element = document.getElementById('lastSubmission');
     if (element && data) {
         const createdAt = data[0].created_at;
         const date = new Date(createdAt);
+        const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
 
-        const offsetInMinutes = new Date().getTimezoneOffset();
-        const offsetInHours = offsetInMinutes / 60;
-
-        const offsetDate = new Date(date.getTime() - offsetInHours * 60 * 60 * 1000);
-
-        const unixTimestamp = Math.floor(offsetDate.getTime() / 1000);
+        const unixTimestamp = Math.floor(localDate.getTime() / 1000);
         const currentTimestamp = Math.floor(Date.now() / 1000);
         
         const differenceInSeconds = currentTimestamp - unixTimestamp;
