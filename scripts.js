@@ -15,10 +15,14 @@ let boostMultipliersData = null;
 let legacyStakeData = null;
 
 function formatNumber(number) {
-    return parseFloat(number).toLocaleString(undefined, { 
-        minimumFractionDigits: 3, 
-        maximumFractionDigits: 4 
-    });
+    if (Number.isInteger(number)) {
+        return number.toLocaleString();
+    } else {
+        return parseFloat(number).toLocaleString(undefined, { 
+            minimumFractionDigits: 3, 
+            maximumFractionDigits: 4 
+        });
+    }
 }
 
 async function getLatestMine() {
@@ -428,7 +432,7 @@ function updateActiveMiners() {
     const element = document.getElementById('activeMiners');
     
     if (element) {
-        element.textContent = activeMinersData;
+        element.textContent = formatNumber(activeMinersData);
     } else {
         console.error('Element with ID "activeMiners" not found.');
     }
