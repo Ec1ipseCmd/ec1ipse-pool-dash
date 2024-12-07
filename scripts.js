@@ -199,12 +199,12 @@ function renderBoostTable() {
                 multiplierText = '(16x - 16% rewards)';
                 break;
             case 'DrSS5RM7zUd9qjUEdDaf31vnDUSbCrMto6mjqTrHFifN':
-                boostName = 'ORE-SOL LP';
-                multiplierText = '(16x - 24% rewards)';
+                boostName = 'ORE-SOL Meteora LP';
+                multiplierText = '(8x - 24% rewards)';
                 break;
             case 'meUwDp23AaxhiNKaQCyJ2EAF2T4oe1gSkEkGXSRVdZb':
-                boostName = 'ORE-ISC LP';
-                multiplierText = '(16x - 20% rewards)';
+                boostName = 'ORE-ISC Meteora LP';
+                multiplierText = '(12x - 20% rewards)';
                 break;
             default:
                 boostName = `Unknown Boost (${item.boost_mint})`;
@@ -349,7 +349,8 @@ function updatePoolRewards() {
         if (legacyStakeData != null){
             const legacyStakeNumber = typeof legacyStakeData === 'number' ? legacyStakeData : parseFloat(legacyStakeData);
             const scaledLegacyStake = legacyStakeNumber / 100000000000;
-            legacyStakeElement.innerHTML = scaledLegacyStake;
+            legacyStakeElement.innerHTML = formatNumber(scaledLegacyStake);
+
         }
 
         rewardsElement.innerHTML = formatNumber(rewards);
