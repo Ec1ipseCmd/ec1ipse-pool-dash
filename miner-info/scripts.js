@@ -2,49 +2,39 @@ const urlParams = new URLSearchParams(window.location.search);
 const pubkey = urlParams.get('pubkey');
 let data = null;
 let lastFetchTimestamp = 0;
-
 document.getElementById('minerPubkey').textContent = pubkey;
-
 const dataUrl = `https://domainexpansion.tech/miner/submissions?pubkey=${encodeURIComponent(pubkey)}`;
 const apiUrl = `https://ec1ipse.me/v2/miner/boost/stake-accounts?pubkey=${encodeURIComponent(pubkey)}`;
 const rewardsUrl = `https://domainexpansion.tech/miner/rewards?pubkey=${encodeURIComponent(pubkey)}`;
-
 let difficultyChart = null;
 let avgDifficultyChart = null;
 let difficultyCountChart = null;
-
 const tokenLabels = {
     "oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp": "ORE",
     "DrSS5RM7zUd9qjUEdDaf31vnDUSbCrMto6mjqTrHFifN": "ORE-SOL",
     "meUwDp23AaxhiNKaQCyJ2EAF2T4oe1gSkEkGXSRVdZb": "ORE-ISC"
 };
-
 async function fetchDataAndUpdateCharts() {
     try {
+        const loadButton = document.getElementById('loadSubmissionsButton');
+        if (loadButton) loadButton.disabled = true;
         const dataResponse = await fetch(dataUrl);
         if (!dataResponse.ok) throw new Error('Network response was not ok.');
         data = await dataResponse.json();
-
         const count = data.length;
         const labels = Array.from({ length: count }, (_, i) => (count - i).toString());
         const difficulties = data.map(item => item.difficulty).reverse();
-
         document.getElementById('minerId').textContent = data.length > 0 ? data[0].miner_id : 'No data available';
-
         updateTimeAgo();
-
         const minDifficulty = Math.min(...difficulties);
         const maxDifficulty = Math.max(...difficulties);
-
         const ctxDifficulty = document.getElementById('difficultyChart').getContext('2d');
         const gradientDifficulty = ctxDifficulty.createLinearGradient(0, 0, 0, 400);
         gradientDifficulty.addColorStop(0, 'rgba(0, 255, 127, 0.7)');
         gradientDifficulty.addColorStop(1, 'rgba(0, 255, 127, 0)');
-
         if (difficultyChart) {
             difficultyChart.destroy();
         }
-
         difficultyChart = new Chart(ctxDifficulty, {
             type: 'line',
             data: {
@@ -109,21 +99,17 @@ async function fetchDataAndUpdateCharts() {
                 }
             }
         });
-
         const avgDifficulties = difficulties.map((_, i, arr) => {
             const subset = arr.slice(0, i + 1);
             return subset.reduce((sum, val) => sum + val, 0) / subset.length;
         });
-
         const ctxAvgDifficulty = document.getElementById('avgDifficultyChart').getContext('2d');
         const gradientAvgDifficulty = ctxAvgDifficulty.createLinearGradient(0, 0, 0, 400);
         gradientAvgDifficulty.addColorStop(0, 'rgba(255, 99, 132, 0.7)');
         gradientAvgDifficulty.addColorStop(1, 'rgba(255, 99, 132, 0)');
-
         if (avgDifficultyChart) {
             avgDifficultyChart.destroy();
         }
-
         avgDifficultyChart = new Chart(ctxAvgDifficulty, {
             type: 'line',
             data: {
@@ -188,24 +174,19 @@ async function fetchDataAndUpdateCharts() {
                 }
             }
         });
-
         const difficultyCount = difficulties.reduce((acc, difficulty) => {
             acc[difficulty] = (acc[difficulty] || 0) + 1;
             return acc;
         }, {});
-
         const countLabels = Object.keys(difficultyCount);
         const countValues = Object.values(difficultyCount);
-
         const ctxDifficultyCount = document.getElementById('difficultyCountChart').getContext('2d');
         const gradientDifficultyCount = ctxDifficultyCount.createLinearGradient(0, 0, 0, 400);
         gradientDifficultyCount.addColorStop(0, 'rgba(153, 102, 255, 0.7)');
         gradientDifficultyCount.addColorStop(1, 'rgba(153, 102, 255, 0)');
-
         if (difficultyCountChart) {
             difficultyCountChart.destroy();
         }
-
         difficultyCountChart = new Chart(ctxDifficultyCount, {
             type: 'bar',
             data: {
@@ -261,44 +242,38 @@ async function fetchDataAndUpdateCharts() {
                 }
             }
         });
-
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
         document.getElementById('minerId').textContent = 'No data available';
+    } finally {
+        const loadButton = document.getElementById('loadSubmissionsButton');
+        if (loadButton) loadButton.disabled = false;
     }
 }
-
 async function updateRewardsAndStakes() {
     try {
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error("Failed to load staked balances.");
-
         const data = await response.json();
         const stakedBalancesList = document.getElementById("stakedBalancesList");
         stakedBalancesList.innerHTML = "";
-
         let totalStakeRewards = 0;
-
         if (Array.isArray(data) && data.length > 0) {
             const groupedBalances = data.reduce((acc, item) => {
                 const tokenLabel = tokenLabels[item.mint_pubkey] || "Unknown Token";
                 const stakedBalance = (parseFloat(item.staked_balance || 0) / 1e11).toPrecision(11).replace(/\.?0+$/, '');
                 const rewardsBalance = (parseFloat(item.rewards_balance || 0) / 1e11).toPrecision(11).replace(/\.?0+$/, '');
-                
                 totalStakeRewards += parseFloat(rewardsBalance);
-                
                 if (!acc[tokenLabel]) {
                     acc[tokenLabel] = { stakedBalance, rewardsBalances: [] };
                 }
                 acc[tokenLabel].rewardsBalances.push(rewardsBalance);
                 return acc;
             }, {});
-
             for (const [token, balances] of Object.entries(groupedBalances)) {
                 const tokenItem = document.createElement("li");
                 tokenItem.innerHTML = `<strong>${balances.stakedBalance}</strong> ${token}`;
                 stakedBalancesList.appendChild(tokenItem);
-
                 const rewardList = document.createElement("ul");
                 balances.rewardsBalances.forEach(reward => {
                     const rewardItem = document.createElement("li");
@@ -310,7 +285,6 @@ async function updateRewardsAndStakes() {
         } else {
             stakedBalancesList.textContent = "No staked balances found.";
         }
-
         const totalStakeRewardsElement = document.getElementById("stakeRewards");
         if (totalStakeRewardsElement) {
             totalStakeRewardsElement.textContent = totalStakeRewards.toPrecision(11).replace(/\.?0+$/, '');
@@ -319,11 +293,9 @@ async function updateRewardsAndStakes() {
         console.error("Error fetching staked balances:", error);
         document.getElementById("stakedBalancesList").textContent = "Error loading staked balances.";
     }
-
     try {
         const rewardsResponse = await fetch(rewardsUrl);
         if (!rewardsResponse.ok) throw new Error('Failed to fetch rewards balance.');
-
         const rewardsData = await rewardsResponse.json();
         const rewardElement = document.getElementById("claimableRewards");
         if (rewardElement) {
@@ -337,38 +309,35 @@ async function updateRewardsAndStakes() {
         }
     }
 }
-
 function updateTimeAgo() {
     const element = document.getElementById('lastSubmission');
     if (element && data) {
         const createdAt = data[0].created_at;
         const date = new Date(createdAt);
         const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-
         const unixTimestamp = Math.floor(localDate.getTime() / 1000);
         const currentTimestamp = Math.floor(Date.now() / 1000);
-        
         const differenceInSeconds = currentTimestamp - unixTimestamp;
         const minutes = Math.floor(differenceInSeconds / 60);
         const seconds = differenceInSeconds % 60;
-
         element.textContent = `${minutes}m ${seconds}s ago`;
-
         if (differenceInSeconds > 70 && currentTimestamp - lastFetchTimestamp > 30) {
             lastFetchTimestamp = currentTimestamp;
             fetchDataAndUpdateCharts();
             console.log("Fetching new data...");
         }
     } else {
-        console.warn('Element with ID "lastSubmission" not found or latestMineData is not available.');
+        console.warn('Element with ID "lastSubmission" not found or data is not available.');
     }
 }
-
 document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("minerPubkey").textContent = pubkey;
     await updateRewardsAndStakes();
+    const loadButton = document.getElementById('loadSubmissionsButton');
+    if (loadButton) {
+        loadButton.addEventListener('click', fetchDataAndUpdateCharts);
+    } else {
+        console.warn('Load Submissions button not found.');
+    }
 });
-
-fetchDataAndUpdateCharts();
-setInterval(fetchDataAndUpdateCharts, 60000);
 setInterval(updateTimeAgo, 1000);
