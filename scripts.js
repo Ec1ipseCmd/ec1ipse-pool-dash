@@ -340,18 +340,10 @@ function updateHighestDayDifficulty() {
 function updatePoolRewards() {
     const rewardsElement = document.getElementById('poolRewards');
     const rewardsClaimedElement = document.getElementById('claimedRewards');
-    const legacyStakeElement = document.getElementById('legacyStake');
     
     if (rewardsElement && rewardsClaimedElement && poolRewardsData) {
         const rewards = poolRewardsData.total_rewards / 100000000000;
         const claimedRewards = poolRewardsData.claimed_rewards / 100000000000;
-
-        if (legacyStakeData != null){
-            const legacyStakeNumber = typeof legacyStakeData === 'number' ? legacyStakeData : parseFloat(legacyStakeData);
-            const scaledLegacyStake = legacyStakeNumber / 100000000000;
-            legacyStakeElement.innerHTML = formatNumber(scaledLegacyStake);
-
-        }
 
         rewardsElement.innerHTML = formatNumber(rewards);
         rewardsClaimedElement.innerHTML = formatNumber(claimedRewards);

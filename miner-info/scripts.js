@@ -4,7 +4,6 @@ let data = null;
 let lastFetchTimestamp = 0;
 document.getElementById('minerPubkey').textContent = pubkey;
 const dataUrl = `https://domainexpansion.tech/miner/submissions?pubkey=${encodeURIComponent(pubkey)}`;
-const apiUrl = `https://ec1ipse.me/v2/miner/boost/stake-accounts?pubkey=${encodeURIComponent(pubkey)}`;
 const rewardsUrl = `https://domainexpansion.tech/miner/rewards?pubkey=${encodeURIComponent(pubkey)}`;
 let difficultyChart = null;
 let avgDifficultyChart = null;
@@ -16,8 +15,6 @@ const tokenLabels = {
 };
 async function fetchDataAndUpdateCharts() {
     try {
-        const loadButton = document.getElementById('loadSubmissionsButton');
-        if (loadButton) loadButton.disabled = true;
         const dataResponse = await fetch(dataUrl);
         if (!dataResponse.ok) throw new Error('Network response was not ok.');
         data = await dataResponse.json();
@@ -245,54 +242,9 @@ async function fetchDataAndUpdateCharts() {
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
         document.getElementById('minerId').textContent = 'No data available';
-    } finally {
-        const loadButton = document.getElementById('loadSubmissionsButton');
-        if (loadButton) loadButton.disabled = false;
     }
 }
 async function updateRewardsAndStakes() {
-    try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error("Failed to load staked balances.");
-        const data = await response.json();
-        const stakedBalancesList = document.getElementById("stakedBalancesList");
-        stakedBalancesList.innerHTML = "";
-        let totalStakeRewards = 0;
-        if (Array.isArray(data) && data.length > 0) {
-            const groupedBalances = data.reduce((acc, item) => {
-                const tokenLabel = tokenLabels[item.mint_pubkey] || "Unknown Token";
-                const stakedBalance = (parseFloat(item.staked_balance || 0) / 1e11).toPrecision(11).replace(/\.?0+$/, '');
-                const rewardsBalance = (parseFloat(item.rewards_balance || 0) / 1e11).toPrecision(11).replace(/\.?0+$/, '');
-                totalStakeRewards += parseFloat(rewardsBalance);
-                if (!acc[tokenLabel]) {
-                    acc[tokenLabel] = { stakedBalance, rewardsBalances: [] };
-                }
-                acc[tokenLabel].rewardsBalances.push(rewardsBalance);
-                return acc;
-            }, {});
-            for (const [token, balances] of Object.entries(groupedBalances)) {
-                const tokenItem = document.createElement("li");
-                tokenItem.innerHTML = `<strong>${balances.stakedBalance}</strong> ${token}`;
-                stakedBalancesList.appendChild(tokenItem);
-                const rewardList = document.createElement("ul");
-                balances.rewardsBalances.forEach(reward => {
-                    const rewardItem = document.createElement("li");
-                    rewardItem.textContent = `Stake Rewards: ${reward} ORE`;
-                    rewardList.appendChild(rewardItem);
-                });
-                stakedBalancesList.appendChild(rewardList);
-            }
-        } else {
-            stakedBalancesList.textContent = "No staked balances found.";
-        }
-        const totalStakeRewardsElement = document.getElementById("stakeRewards");
-        if (totalStakeRewardsElement) {
-            totalStakeRewardsElement.textContent = totalStakeRewards.toPrecision(11).replace(/\.?0+$/, '');
-        }
-    } catch (error) {
-        console.error("Error fetching staked balances:", error);
-        document.getElementById("stakedBalancesList").textContent = "Error loading staked balances.";
-    }
     try {
         const rewardsResponse = await fetch(rewardsUrl);
         if (!rewardsResponse.ok) throw new Error('Failed to fetch rewards balance.');
@@ -333,11 +285,6 @@ function updateTimeAgo() {
 document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("minerPubkey").textContent = pubkey;
     await updateRewardsAndStakes();
-    const loadButton = document.getElementById('loadSubmissionsButton');
-    if (loadButton) {
-        loadButton.addEventListener('click', fetchDataAndUpdateCharts);
-    } else {
-        console.warn('Load Submissions button not found.');
-    }
+    await fetchDataAndUpdateCharts();
 });
 setInterval(updateTimeAgo, 1000);

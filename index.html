@@ -16,7 +16,6 @@
         <header class="header">
             <h1>Ec1ipse Mining Pool Dashboard</h1>
             <div class="header-actions">
-                <button id="calcButton" onclick="window.open('https://calc.ec1ipse.me/', '_blank')">Ec1ipse Calc</button>
                 <button id="stakeTokensButton" onclick="window.open('https://stake.ec1ipse.me/', '_blank')">Ec1ipse Stake</button>
                 <button id="getStartedButton" onclick="window.open('https://gitbook.ec1ipse.me/', '_blank')">Get Started</button>
                 <form id="searchForm" action="miner-info/miner" target="_blank" method="get" class="search-container">
@@ -64,38 +63,7 @@
                     <li>24hr Earnings: <span class="stat-number" id="dayEarnings">Loading...</span> ORE</li>
                     <li>Total Rewards: <span class="stat-number" id="poolRewards">Loading...</span> ORE</li>
                     <li>Total Claimed Rewards: <span class="stat-number" id="claimedRewards">Loading...</span> ORE</li>
-                    <li>Total Legacy Stake: <span class="stat-number" id="legacyStake">Loading...</span> ORE</li>
                 </ul>
-            </div>
-        </section>
-
-        <section>
-            <h2>Boost Overview
-                <button id="stakeTokensButton" onclick="window.open('https://stake.ec1ipse.me/', '_blank')">Ec1ipse Stake</button>
-            </h2>
-            <div class="stake-stats">
-                <!-- Responsive Table Wrapper -->
-                <div class="scrollable-table-container">
-                    <div class="table-responsive">
-                        <table id="boostTable">
-                            <thead>
-                                <tr>
-                                    <th>Boost Name</th>
-                                    <th>Staked Balance</th>
-                                    <th>Total Stake Balance</th>
-                                    <th>Percentage of Total Stake (%)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Data Rows Go Here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            <div class="pie-charts-container">
-                <div id="oreChart" class="pie-chart"></div>
-                <div id="oresolLpChart" class="pie-chart"></div>
-                <div id="oreiscLpChart" class="pie-chart"></div>
             </div>
         </section>
 
