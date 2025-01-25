@@ -8,11 +8,6 @@ const rewardsUrl = `https://domainexpansion.tech/miner/rewards?pubkey=${encodeUR
 let difficultyChart = null;
 let avgDifficultyChart = null;
 let difficultyCountChart = null;
-const tokenLabels = {
-    "oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp": "ORE",
-    "DrSS5RM7zUd9qjUEdDaf31vnDUSbCrMto6mjqTrHFifN": "ORE-SOL",
-    "meUwDp23AaxhiNKaQCyJ2EAF2T4oe1gSkEkGXSRVdZb": "ORE-ISC"
-};
 async function fetchDataAndUpdateCharts() {
     try {
         const dataResponse = await fetch(dataUrl);
@@ -244,7 +239,7 @@ async function fetchDataAndUpdateCharts() {
         document.getElementById('minerId').textContent = 'No data available';
     }
 }
-async function updateRewardsAndStakes() {
+async function updateRewards() {
     try {
         const rewardsResponse = await fetch(rewardsUrl);
         if (!rewardsResponse.ok) throw new Error('Failed to fetch rewards balance.');
@@ -284,7 +279,7 @@ function updateTimeAgo() {
 }
 document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("minerPubkey").textContent = pubkey;
-    await updateRewardsAndStakes();
+    await updateRewards();
     await fetchDataAndUpdateCharts();
 });
 setInterval(updateTimeAgo, 1000);

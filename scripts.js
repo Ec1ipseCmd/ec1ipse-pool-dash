@@ -91,7 +91,7 @@ async function getActiveMiners() {
         }
         const data = await response.json();
         activeMinersData = data;
-        console.log(activeMinersData);
+        // console.log(activeMinersData);
         updateActiveMiners();
     } catch (error) {
         console.error('Error fetching active miners data:', error);
@@ -108,7 +108,7 @@ async function getPoolRewards() {
         }
         const data = await response.json();
         poolRewardsData = data;
-        console.log(poolRewardsData);
+        // console.log(poolRewardsData);
         updatePoolRewards();
     } catch (error) {
         console.error('Error fetching pool rewards data:', error);
@@ -124,7 +124,7 @@ async function getStakeOreLegacy() {
         }
         const data = await response.json();
         poolStakeData = data;
-        console.log('Legacy Stake Data:', poolStakeData);
+        // console.log('Legacy Stake Data:', poolStakeData);
         legacyStakeData = poolStakeData;
         updatePoolRewards();
     } catch (error) {
@@ -142,29 +142,29 @@ async function getClientData() {
         }
         const data = await response.json();
         clientData = data;
-        console.log(clientData);
+        // console.log(clientData);
         updateNewestVersionAndTime();
     } catch (error) {
         console.error('Error fetching client data:', error);
     }
 }
 
-async function getPoolMultiplier() {
-    const url = 'https://domainexpansion.tech/stake-multiplier';
+// async function getPoolMultiplier() {
+//     const url = 'https://domainexpansion.tech/stake-multiplier';
 
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        stakeData = data;
-        console.log(stakeData);
-        updatePoolMultiplier();
-    } catch (error) {
-        console.error('Error fetching pool multiplier data:', error);
-    }
-}
+//     try {
+//         const response = await fetch(url);
+//         if (!response.ok) {
+//             throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//         const data = await response.json();
+//         stakeData = data;
+//         console.log(stakeData);
+//         updatePoolMultiplier();
+//     } catch (error) {
+//         console.error('Error fetching pool multiplier data:', error);
+//     }
+// }
 
 async function getBoostMultipliers() {
     const url = 'https://domainexpansion.tech/boost-multiplier';
@@ -175,67 +175,13 @@ async function getBoostMultipliers() {
         }
         const data = await response.json();
         boostMultipliersData = data;
-        console.log('Boost Multipliers Data:', boostMultipliersData);
-        renderBoostTable();
-        renderPieCharts();
+        // console.log('Boost Multipliers Data:', boostMultipliersData);
+        // renderBoostTable();
+        // renderPieCharts();
     } catch (error) {
         console.error('Error fetching boost multipliers:', error);
     }
 }
-
-function renderBoostTable() {
-    if (!boostMultipliersData) return;
-
-    const boostTableBody = document.querySelector('#boostTable tbody');
-    boostTableBody.innerHTML = '';
-
-    boostMultipliersData.forEach(item => {
-        let boostName = '';
-        let multiplierText = '';
-
-        switch(item.boost_mint) {
-            case 'oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp':
-                boostName = 'ORE';
-                multiplierText = '';
-                break;
-            case 'DrSS5RM7zUd9qjUEdDaf31vnDUSbCrMto6mjqTrHFifN':
-                boostName = 'ORE-SOL Meteora LP';
-                multiplierText = '';
-                break;
-            case 'meUwDp23AaxhiNKaQCyJ2EAF2T4oe1gSkEkGXSRVdZb':
-                boostName = 'ORE-ISC Meteora LP';
-                multiplierText = '';
-                break;
-            default:
-                boostName = `Unknown Boost (${item.boost_mint})`;
-                console.warn(`Unknown boost_mint: ${item.boost_mint}`);
-        }
-
-        const percentage = ((item.staked_balance / item.total_stake_balance) * 100).toFixed(2);
-
-        const row = document.createElement('tr');
-
-        const boostCell = document.createElement('td');
-        boostCell.innerHTML = `${boostName} <span style="font-size: 0.85em; color: rgba(255, 255, 255, 0.35); margin-left: 4px;">${multiplierText}</span>`;
-
-        const stakedBalanceCell = document.createElement('td');
-        stakedBalanceCell.textContent = formatNumber(item.staked_balance);
-
-        const totalStakeBalanceCell = document.createElement('td');
-        totalStakeBalanceCell.textContent = formatNumber(item.total_stake_balance);
-
-        const percentageCell = document.createElement('td');
-        percentageCell.textContent = `${percentage}%`;
-
-        row.appendChild(boostCell);
-        row.appendChild(stakedBalanceCell);
-        row.appendChild(totalStakeBalanceCell);
-        row.appendChild(percentageCell);
-
-        boostTableBody.appendChild(row);
-    });
-}
-
 
 function updatePoolMultiplier() {
     const element = document.getElementById('poolMultiplier');
@@ -340,10 +286,18 @@ function updateHighestDayDifficulty() {
 function updatePoolRewards() {
     const rewardsElement = document.getElementById('poolRewards');
     const rewardsClaimedElement = document.getElementById('claimedRewards');
+    const legacyStakeElement = document.getElementById('legacyStake');
     
     if (rewardsElement && rewardsClaimedElement && poolRewardsData) {
         const rewards = poolRewardsData.total_rewards / 100000000000;
         const claimedRewards = poolRewardsData.claimed_rewards / 100000000000;
+
+        if (legacyStakeData != null){
+            const legacyStakeNumber = typeof legacyStakeData === 'number' ? legacyStakeData : parseFloat(legacyStakeData);
+            const scaledLegacyStake = legacyStakeNumber / 100000000000;
+            legacyStakeElement.innerHTML = formatNumber(scaledLegacyStake);
+
+        }
 
         rewardsElement.innerHTML = formatNumber(rewards);
         rewardsClaimedElement.innerHTML = formatNumber(claimedRewards);
@@ -398,7 +352,7 @@ function updateAverageHashrate() {
     const element = document.getElementById('averageHashrate');
 
     element.textContent = `${formattedHashrate} H/s`;
-    console.log(`Average Pool Hashrate: ${formattedHashrate} H/s`);
+    // console.log(`Average Pool Hashrate: ${formattedHashrate} H/s`);
 }
 
 function updateLatestDifficulty() {
@@ -410,9 +364,7 @@ function updateLatestDifficulty() {
     latestDifficulty = latestSubmissionsData.reduce((max, miner) => {
         return miner.difficulty > max ? miner.difficulty : max;
     }, 0);
-
-    console.log('Latest Pool Difficulty:', latestDifficulty)
-
+    // console.log('Latest Pool Difficulty:', latestDifficulty)
     const difficultyElement = document.getElementById('latestDifficulty');
     if (difficultyElement) {
         difficultyElement.textContent = `${latestDifficulty}`;
@@ -627,7 +579,7 @@ function getLatestData() {
     getStakeOreLegacy();
     getBoostMultipliers();
     getClientData();
-    getPoolMultiplier();
+    // getPoolMultiplier();
 }
 
 getLatestData();
@@ -641,101 +593,4 @@ function getTokenName(boostMint) {
         'meUwDp23AaxhiNKaQCyJ2EAF2T4oe1gSkEkGXSRVdZb': 'ORE-ISC LP',
     };
     return mapping[boostMint] || 'Unknown Token';
-}
-
-function renderPieCharts() {
-    if (!boostMultipliersData) {
-        console.error('Boost multipliers data is not available.');
-        return;
-    }
-    
-    boostMultipliersData.forEach(item => {
-        const tokenName = getTokenName(item.boost_mint);
-        if (tokenName === 'Unknown Token') {
-            return;
-        }
-
-        const yourBalance = parseFloat(item.staked_balance) || 0;
-        const totalBalance = parseFloat(item.total_stake_balance) || 0;
-        const othersBalance = Math.max(totalBalance - yourBalance, 0);
-
-        let containerId = '';
-        switch(item.boost_mint) {
-            case 'oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp':
-                containerId = 'oreChart';
-                break;
-            case 'DrSS5RM7zUd9qjUEdDaf31vnDUSbCrMto6mjqTrHFifN':
-                containerId = 'oresolLpChart';
-                break;
-            case 'meUwDp23AaxhiNKaQCyJ2EAF2T4oe1gSkEkGXSRVdZb':
-                containerId = 'oreiscLpChart';
-                break;
-            default:
-                console.warn(`No container defined for boost_mint: ${item.boost_mint}`);
-                return;
-        }
-
-        Highcharts.chart(containerId, {
-            chart: {
-                type: 'pie',
-                options3d: {
-                    enabled: true,
-                    alpha: 45,
-                    beta: 0
-                },
-                backgroundColor: 'transparent',
-                height: 400,
-                animation: false
-            },
-            title: {
-                text: tokenName,
-                y: 65,
-                style: {
-                    color: '#e0e0e0',
-                    fontSize: '20px'
-                },
-            },
-            plotOptions: {
-                pie: {
-                    innerSize: 0,
-                    size: '75%',
-                    depth: 30,
-                    dataLabels: {
-                        enabled: true,
-                        format: '{point.name}: {point.percentage:.2f} %',
-                        style: {
-                            color: '#b0b0b0',
-                            fontSize: '10px'
-                        }
-                    },
-                    borderColor: '#FFFFFF',
-                    borderWidth: 1,
-                    shadow: false,
-                    animation: false
-                }
-            },
-            series: [{
-                name: 'Staked',
-                data: [
-                    { name: 'Ec1ipse', y: yourBalance, color: '#00e676' },
-                    { name: "Others'", y: othersBalance, color: '#424242' }
-                ]
-            }],
-            tooltip: {
-                backgroundColor: 'rgba(0, 0, 0, 0.75)',
-                style: {
-                    color: '#FFFFFF'
-                },
-                formatter: function() {
-                    const tokenName = this.series.name;
-                    const tokenTitle = getTokenName(item.boost_mint);
-                    const pointName = this.point.name;
-                    const pointValue = this.y;
-                    const pointPercentage = this.point.percentage.toFixed(2);
-                    return `<strong>${tokenName}</strong><br/>${pointName}: ${pointValue} ${tokenTitle} (${pointPercentage}%)`;
-                }
-            },
-            
-        });
-    });
 }
