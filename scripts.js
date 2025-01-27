@@ -149,73 +149,104 @@ async function getClientData() {
     }
 }
 
-// async function getPoolMultiplier() {
-//     const url = 'https://domainexpansion.tech/stake-multiplier';
+async function getPoolMultiplier() {
+    const url = 'https://domainexpansion.tech/stake-multiplier';
 
-//     try {
-//         const response = await fetch(url);
-//         if (!response.ok) {
-//             throw new Error(`HTTP error! status: ${response.status}`);
-//         }
-//         const data = await response.json();
-//         stakeData = data;
-//         console.log(stakeData);
-//         updatePoolMultiplier();
-//     } catch (error) {
-//         console.error('Error fetching pool multiplier data:', error);
-//     }
-// }
-
-async function getBoostMultipliers() {
-    const url = 'https://domainexpansion.tech/boost-multiplier';
     try {
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        boostMultipliersData = data;
-        // console.log('Boost Multipliers Data:', boostMultipliersData);
-        // renderBoostTable();
-        // renderPieCharts();
+        stakeData = data;
+        console.log(stakeData);
+        updatePoolMultiplier();
     } catch (error) {
-        console.error('Error fetching boost multipliers:', error);
+        console.error('Error fetching pool multiplier data:', error);
+    }
+}
+
+async function getBoostMultipliers() {
+    const DUNE_API_KEY = 'bT8tNS1pJyWWnBWL04Hme1EkMkySyqfG';
+    const DUNE_QUERY_ID = '4626984';
+    const url = `https://api.dune.com/api/v1/query/${DUNE_QUERY_ID}/results`;
+    
+    try {
+        const response = await fetch(url, {
+            headers: {
+                'X-Dune-API-Key': DUNE_API_KEY
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Raw Dune data:', data);
+        
+        // Find the entry for Ec1ipse (HQ)
+        if (data.result && data.result.rows) {
+            const eclipseData = data.result.rows.find(row => row.signer === 'Ec1ipse (HQ)');
+            if (eclipseData) {
+                // Store the boost multiplier
+                boostMultipliersData = eclipseData.avg_multiplier + 1;
+                
+                // Log all the detailed information
+                console.log('Ec1ipse (HQ) Mining Statistics:');
+                console.log('--------------------------------');
+                console.log('Total Yield:', eclipseData.yield.toFixed(4));
+                console.log('Physical Yield:', eclipseData.physical_yield.toFixed(4));
+                console.log('Virtual Yield:', eclipseData.virtual_yield.toFixed(4));
+                console.log('Boost Multiplier:', (eclipseData.avg_multiplier + 1).toFixed(4));
+                console.log('Average Reward:', eclipseData.avg_reward.toFixed(4));
+                console.log('Maximum Reward:', eclipseData.max_reward.toFixed(4));
+                console.log('Maximum Difficulty:', eclipseData.max_difficulty);
+                console.log('Total Events:', eclipseData.events);
+                console.log('--------------------------------');
+                
+                // Update pool multiplier display
+                updatePoolMultiplier();
+
+                // Update all earnings displays
+                const dayEarningsElement = document.getElementById('dayEarnings');
+                const physicalEarningsElement = document.getElementById('physicalEarnings');
+                const multiplierEarningsElement = document.getElementById('multiplierEarnings');
+
+                if (dayEarningsElement) {
+                    dayEarningsElement.innerHTML = formatNumber(eclipseData.yield);
+                }
+                if (physicalEarningsElement) {
+                    physicalEarningsElement.innerHTML = formatNumber(eclipseData.physical_yield);
+                }
+                if (multiplierEarningsElement) {
+                    multiplierEarningsElement.innerHTML = formatNumber(eclipseData.virtual_yield);
+                }
+            } else {
+                console.error('No data found for Ec1ipse (HQ)');
+            }
+        } else {
+            console.error('No data received from Dune query');
+        }
+    } catch (error) {
+        console.error('Error fetching boost multipliers from Dune:', error);
     }
 }
 
 function updatePoolMultiplier() {
     const element = document.getElementById('poolMultiplier');
 
-    if (element && stakeData) {
-        let formattedMultiplier = 0;
-
-        if (boostMultipliersData && Array.isArray(boostMultipliersData)) {
-            console.log("Boost multipliers data:", boostMultipliersData);
-
-            boostMultipliersData.forEach((boost, index) => {
-                const { multiplier, staked_balance, total_stake_balance } = boost;
-
-                console.log(`Boost #${index + 1}: multiplier=${multiplier}, staked_balance=${staked_balance}, total_stake_balance=${total_stake_balance}`);
-
-                if (multiplier && staked_balance && total_stake_balance > 0) {
-                    const contribution = (multiplier * staked_balance) / total_stake_balance;
-                    console.log(`Contribution for boost #${index + 1}: ${contribution.toFixed(4)}`);
-                    formattedMultiplier += contribution;
-                } else {
-                    console.warn(`Invalid data for boost #${index + 1}: Skipping calculation due to missing or zero values.`);
-                }
-            });
-        } else {
-            console.warn("Boost multipliers data is missing or not an array.");
-        }
-
-        if (formattedMultiplier < 2.00) {
+    if (element && boostMultipliersData) {
+        // Format the multiplier to 2 decimal places
+        const formattedMultiplier = parseFloat(boostMultipliersData).toFixed(2);
+        
+        if (formattedMultiplier < 0.00) {
             element.innerHTML = "Loading... ";
         } else {
-            element.innerHTML = formattedMultiplier.toFixed(2);
+            element.innerHTML = formattedMultiplier;
         }
     } else {
-        console.error('Element with ID "poolMultiplier" not found or stakeData is not available.');
+        console.error('Element with ID "poolMultiplier" not found or multiplier data is not available.');
     }
 }
 
@@ -383,6 +414,27 @@ function updateActiveMiners() {
     }
 }
 
+function updateMultiplierEarnings() {
+    const element = document.getElementById('multiplierEarnings');
+
+    if (!Array.isArray(challengesData) || challengesData.length === 0) {
+        console.warn('No challenge data available.');
+        return;
+    }
+
+    const totalRewards = challengesData.reduce((sum, item) => sum + item.rewards_earned, 0);
+    const baseResult = totalRewards / 100000000000;
+    
+    // Calculate virtual yield using the boost multiplier
+    const virtualYield = boostMultipliersData ? baseResult * (boostMultipliersData - 1) : 0;
+
+    if (element) {
+        element.textContent = formatNumber(virtualYield);
+    } else {
+        console.error('Element with ID "multiplierEarnings" not found.');
+    }
+}
+
 function updateDayEarnings() {
     const element = document.getElementById('dayEarnings')
 
@@ -392,11 +444,12 @@ function updateDayEarnings() {
     }
 
     const totalRewards = challengesData.reduce((sum, item) => sum + item.rewards_earned, 0);
-
     const result = totalRewards / 100000000000;
 
     if (element) {
         element.textContent = formatNumber(result);
+        // Update multiplier earnings when day earnings are updated
+        updateMultiplierEarnings();
     } else {
         console.error('Element with ID "dayEarnings" not found.');
     }
@@ -579,18 +632,8 @@ function getLatestData() {
     getStakeOreLegacy();
     getBoostMultipliers();
     getClientData();
-    // getPoolMultiplier();
 }
 
 getLatestData();
 
 setInterval(updateTimeAgo, 1000);
-
-function getTokenName(boostMint) {
-    const mapping = {
-        'oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp': 'ORE',
-        'DrSS5RM7zUd9qjUEdDaf31vnDUSbCrMto6mjqTrHFifN': 'ORE-SOL LP',
-        'meUwDp23AaxhiNKaQCyJ2EAF2T4oe1gSkEkGXSRVdZb': 'ORE-ISC LP',
-    };
-    return mapping[boostMint] || 'Unknown Token';
-}

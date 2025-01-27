@@ -11,11 +11,17 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="staking-multiplier-banner">
+        <h2>Maximize Your Earnings<br> with a <span id="poolMultiplier" class="stat-number">Loading...</span>x Boost Multiplier!</h2>
+        <p>Earn more with our increased boosted rewards!</p>
+    </div>
+
     <br>
     <div class="container">
         <header class="header">
             <h1>Ec1ipse Mining Pool Dashboard</h1>
             <div class="header-actions">
+                <button id="calcButton" onclick="window.open('https://calc.ec1ipse.me/', '_blank')">Ec1ipse Calc</button>
                 <button id="stakeTokensButton" onclick="window.open('https://stake.ec1ipse.me/', '_blank')">Ec1ipse Stake</button>
                 <button id="getStartedButton" onclick="window.open('https://gitbook.ec1ipse.me/', '_blank')">Get Started</button>
                 <form id="searchForm" action="miner-info/miner" target="_blank" method="get" class="search-container">
@@ -60,10 +66,20 @@
             <h2>Reward Overview</h2>
             <div class="earnings-stats">
                 <ul>
-                    <li>24hr Earnings: <span class="stat-number" id="dayEarnings">Loading...</span> ORE</li>
-                    <li>Total Rewards: <span class="stat-number" id="poolRewards">Loading...</span> ORE</li>
-                    <li>Claimed Rewards: <span class="stat-number" id="claimedRewards">Loading...</span> ORE</li>
-                    <li>Unclaimed Rewards: <span class="stat-number" id="legacyStake">Loading...</span> ORE</li>
+                    <li>24hr Total Earnings: <span class="stat-number" id="dayEarnings">Loading...</span> ORE</li>
+                    <li style="margin-left: 20px; font-size: 0.95em;">
+                        24hr Base Earnings: <span class="stat-number" id="physicalEarnings">Loading...</span> ORE
+                    </li>
+                    <li style="margin-left: 20px; font-size: 0.95em;">
+                        24hr Multiplier Earnings: <span class="stat-number" id="multiplierEarnings">Loading...</span> ORE
+                    </li>
+                    <li style="margin-top: 15px;">Total Rewards: <span class="stat-number" id="poolRewards">Loading...</span> ORE</li>
+                    <li style="margin-left: 20px; font-size: 0.95em;">
+                        Claimed Rewards: <span class="stat-number" id="claimedRewards">Loading...</span> ORE
+                    </li>
+                    <li style="margin-left: 20px; font-size: 0.95em;">
+                        Unclaimed Rewards: <span class="stat-number" id="legacyStake">Loading...</span> ORE
+                    </li>
                 </ul>
             </div>
         </section>
