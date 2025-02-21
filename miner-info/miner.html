@@ -4,44 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Miner Information</title>
+    <link rel="preload" href="styles.css" as="style">
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+</head>
 <body>
     <div class="container">
         <h1>Miner Information</h1>
-        <div class="data-section">
+        
+        <div class="data-section" aria-live="polite">
             <h3>Public Key: <span id="minerPubkey">Loading...</span></h3>
         </div>
-        <div class="data-section">
+        
+        <div class="data-section" aria-live="polite">
             <h3>Miner ID: <span id="minerId">Loading...</span></h3>
         </div>
-        <div class="data-section">
+        
+        <div class="data-section" aria-live="polite">
             <h3>Last Submission: <span id="lastSubmission">Loading...</span></h3>
         </div>
-        <div class="data-section">
+        
+        <div class="data-section" aria-live="polite">
             <h3>Mine Rewards: <span id="claimableRewards">Loading...</span></h3>
         </div>
-        <br/>
+
+        <div class="chart-row">
+            <div class="chart-item">
+                <canvas id="efficiencyChart"></canvas>
+            </div>
+        </div>
+        
         <div class="chart-container">
             <div class="chart-row">
                 <div class="chart-item">
-                    <canvas id="difficultyChart"></canvas>
+                    <canvas id="difficultyChart" aria-label="Difficulty Chart" role="img"></canvas>
                 </div>
                 <div class="chart-item">
-                    <canvas id="avgDifficultyChart"></canvas>
+                    <canvas id="avgDifficultyChart" aria-label="Average Difficulty Chart" role="img"></canvas>
                 </div>
             </div>
             <div class="chart-row">
                 <div class="chart-item">
-                    <canvas id="difficultyCountChart"></canvas>
+                    <canvas id="difficultyCountChart" aria-label="Difficulty Count Chart" role="img"></canvas>
                 </div>
                 <div class="chart-item">
-                    <canvas id="avgHashrateChart"></canvas>
+                    <canvas id="avgHashrateChart" aria-label="Average Hashrate Chart" role="img"></canvas>
                 </div>
             </div>
         </div>
     </div>
-    <script src="scripts.js"></script>
+    
+    <script src="scripts.js" defer></script>
 </body>
 </html>

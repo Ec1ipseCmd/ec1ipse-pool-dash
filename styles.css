@@ -15,7 +15,7 @@ body {
     flex: 1;
     width: 80%;
     margin: auto;
-    padding-top: 20px;
+    padding-top: 175px;
     padding-bottom: 100px;
     padding-left: 20px;
     padding-right: 20px;
@@ -41,7 +41,14 @@ body {
 .header,
 .header-actions {
     transition: all 0.3s ease;
-    
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-end;
 }
 
 h2 {
@@ -113,7 +120,6 @@ h3.stat-label {
 .chart-row {
     display: flex;
     justify-content: space-between;
-    
 }
 
 .chart-container {
@@ -138,11 +144,6 @@ canvas {
     color: #00aaff;
 }
 
-.header-actions {
-    display: flex;
-    align-items: center;
-}
-
 #getStartedButton,
 .search-container button {
     padding: 10px 30px;
@@ -155,23 +156,45 @@ canvas {
     transition: background-color 0.3s, transform 0.2s;
 }
 
-#getStartedButton {
-    margin-right: 20px;
+#calcButton, #stakeTokensButton, #getStartedButton {
+    flex: 0 0 auto;
+    min-width: 120px;
+    margin: 0 5px;
+    padding: 10px 30px;
+    border-radius: 8px;
+    border: none;
+    background-color: #00e676;
+    color: #121212;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 #getStartedButton:hover,
+#calcButton:hover,
+#stakeTokensButton:hover,
 .search-container button:hover {
     background-color: #00b248;
     transform: scale(1.05);
 }
 
 .search-container {
-    text-align: right;
+    display: flex;
+    flex: 1;
+    min-width: 300px;
+    max-width: 400px;
+    margin-left: 10px;
+}
+
+#searchForm {
+    display: flex;
+    width: 100%;
 }
 
 .search-container input {
+    flex: 1;
+    min-width: 200px;
     padding: 10px;
-    width: 250px;
     border-radius: 8px;
     border: 1px solid #00e676;
     background: #1e1e1e;
@@ -184,6 +207,10 @@ canvas {
     background: #2e2e2e;
     border-color: #00b248;
     outline: none;
+}
+
+.search-container button {
+    white-space: nowrap;
 }
 
 .footer {
@@ -312,11 +339,41 @@ canvas {
     color: #00aaff;
 }
 
-@media (max-width: 768px) {
+.pie-charts-container {
+    display: flex;
+    width: 100%;
+    padding: 0;
+    margin: 0 auto;
+    height: auto;
+    max-height: 500px;
+    overflow: hidden;
+}
 
+.pie-chart {
+    width: 800px;
+    height: 375px;
+    background-color: transparent;
+    margin: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
+    padding: 0;
+}
+
+.scrollable-table-container {
+    overflow-x: auto;
+    width: 100%;
+}
+
+@media (min-width: 769px) {
+    .scrollable-table-container {
+        overflow-x: hidden;
+    }
+}
+
+@media (max-width: 768px) {
     .container {
         width: 95%;
-        padding-top: 150px; 
+        padding-top: 180px;
         padding-left: 10px;
         padding-right: 10px; 
     }
@@ -327,32 +384,45 @@ canvas {
         text-align: center;
     }
 
-    .header-actions {
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
+    .header h1 {
+        text-align: center; 
+        width: 100%; 
+        margin-bottom: 15px; 
     }
 
-    #getStartedButton,
-    .search-container button {
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    #calcButton, #stakeTokensButton, #getStartedButton {
         width: 100%;
         max-width: 300px;
         margin: 5px 0;
     }
-
+    
+    .search-container {
+        width: 100%;
+        max-width: 300px;
+        margin-left: 0;
+    }
+    
+    #searchForm {
+        flex-direction: column;
+        width: 100%;
+    }
+    
     .search-container input {
         width: 100%;
         margin-right: 0;
         margin-bottom: 10px;
+        box-sizing: border-box;
     }
-
-    .search-container {
-        text-align: center;
-    }
-
+    
     .search-container button {
         width: 100%;
-        max-width: 300px;
     }
 
     .stats-grid {
@@ -378,82 +448,14 @@ canvas {
     .staking-multiplier-banner p {
         font-size: 14px;
     }
-
-
-    .header h1 {
-        text-align: center; 
-        width: 100%; 
-        margin-bottom: 15px; 
-    }
-
-    .header-actions button,
-    .header-actions .search-container button {
-        margin: 10px 0;
-    }
-}
-
-#stakeTokensButton {
-    padding: 10px 30px;
-    border-radius: 8px;
-    border: none;
-    background-color: #00e676;
-    color: #121212;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s, transform 0.2s;
-    margin-right: 1em;
-    margin-left: 1em;
-}
-
-#stakeTokensButton:hover {
-    background-color: #00b248;
-    transform: scale(1.05);
-}
-
-#calcButton {
-    padding: 10px 30px;
-    border-radius: 8px;
-    border: none;
-    background-color: #00e676;
-    color: #121212;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s, transform 0.2s;
-    margin-left: 1em;
-}
-
-#calcButton:hover {
-    background-color: #00b248;
-    transform: scale(1.05);
-}
-
-.pie-charts-container {
-    display: flex;
-    width: 100%;
-    padding: 0;
-    margin: 0 auto;
-    height: auto;
-    max-height: 500px;
-    overflow: hidden;
-}
-
-.pie-chart {
-    width: 800px;
-    height: 375px;
-    background-color: transparent;
-    margin: 20px,
-    border-radius: 12px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
-    padding: 0;
-}
-
-@media (max-width: 800px) {
+    
     .pie-chart {
         width: 300px;
         height: 350px;
         background-color: transparent;
         padding: 0;
     }
+    
     .pie-charts-container {
         width: 100%;
         padding: 0;
@@ -464,13 +466,3 @@ canvas {
     }
 }
 
-.scrollable-table-container {
-    overflow-x: auto;
-    width: 100%;
-}
-
-@media (min-width: 769px) {
-    .scrollable-table-container {
-        overflow-x: hidden;
-    }
-}

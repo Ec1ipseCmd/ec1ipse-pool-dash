@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ec1ipse Mining Pool Dashboard</title>
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="scripts.js" as="script">
     <link rel="stylesheet" href="styles.css">
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/highcharts-3d.js"></script>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.highcharts.com/highcharts.js" defer></script>
+    <script src="https://code.highcharts.com/highcharts-3d.js" defer></script>
 </head>
 <body>
     <div class="staking-multiplier-banner">
@@ -16,12 +17,10 @@
         <p>Earn more with our increased boosted rewards!</p>
     </div>
 
-    <br>
     <div class="container">
         <header class="header">
             <h1>Ec1ipse Mining Pool Dashboard</h1>
             <div class="header-actions">
-                <button id="calcButton" onclick="window.open('https://calc.ec1ipse.me/', '_blank')">Ec1ipse Calc</button>
                 <button id="stakeTokensButton" onclick="window.open('https://stake.ec1ipse.me/', '_blank')">Ec1ipse Stake</button>
                 <button id="getStartedButton" onclick="window.open('https://gitbook.ec1ipse.me/', '_blank')">Get Started</button>
                 <form id="searchForm" action="miner-info/miner" target="_blank" method="get" class="search-container">
@@ -31,8 +30,8 @@
             </div>
         </header>
 
-        <section>
-            <h2>General Pool Statistics</h2>
+        <section aria-labelledby="general-stats-heading">
+            <h2 id="general-stats-heading">General Pool Statistics</h2>
             <div class="stats-grid">
                 <div class="stat-card">
                     <h3 class="stat-label">Average Pool Hashrate (24hr)</h3>
@@ -53,8 +52,8 @@
             </div>
         </section>
 
-        <section>
-            <h2>Mining Statistics</h2>
+        <section aria-labelledby="mining-stats-heading">
+            <h2 id="mining-stats-heading">Mining Statistics</h2>
             <div class="mining-stats">
                 <ul>
                     <li id="recent-txn">Loading...</li>
@@ -62,8 +61,8 @@
             </div>
         </section>
 
-        <section>
-            <h2>Reward Overview</h2>
+        <section aria-labelledby="reward-overview-heading">
+            <h2 id="reward-overview-heading">Reward Overview</h2>
             <div class="earnings-stats">
                 <ul>
                     <li>24hr Total Earnings: <span class="stat-number" id="dayEarnings">Loading...</span> ORE</li>
@@ -84,8 +83,8 @@
             </div>
         </section>
 
-        <section>
-            <h2>Entry and Payout Details</h2>
+        <section aria-labelledby="entry-payout-heading">
+            <h2 id="entry-payout-heading">Entry and Payout Details</h2>
             <div class="block-stats">
                 <ul>
                     <li>Pool Commission: 5%</li>
@@ -100,8 +99,8 @@
             </div>
         </section>
         
-        <section>
-            <h2>Mining Pool Software Version</h2>
+        <section aria-labelledby="software-version-heading">
+            <h2 id="software-version-heading">Mining Pool Software Version</h2>
             <div class="block-stats">
                 <ul>
                     <li>Latest Client Version: <span class="stat-number" id="latestVersion">Loading...</span></li>
@@ -110,8 +109,8 @@
             </div>
         </section>
 
-        <section>
-            <h2>Visualizations</h2>
+        <section aria-labelledby="visualizations-heading">
+            <h2 id="visualizations-heading">Visualizations</h2>
             <div class="chart-row">
                 <div class="chart-container">
                     <canvas id="difficultyHistogram"></canvas>
@@ -126,20 +125,20 @@
     <footer class="footer">
         <div class="social-links">
             <a href="https://github.com/Ec1ipseCmd" target="_blank" aria-label="GitHub">
-                <img src="images/github.png" alt="GitHub" class="social-icon">
+                <img src="images/github.png" alt="GitHub" class="social-icon" width="48" height="48">
             </a>
             <a href="https://twitter.com/ec1ipse_sol" target="_blank" aria-label="Twitter">
-                <img src="images/twitter.png" alt="Twitter" class="social-icon">
+                <img src="images/twitter.png" alt="Twitter" class="social-icon" width="48" height="48">
             </a>
             <a href="https://discord.gg/S6TKPScPPD" target="_blank" aria-label="Discord">
-                <img src="images/discord.png" alt="Discord" class="social-icon">
+                <img src="images/discord.png" alt="Discord" class="social-icon" width="48" height="48">
             </a>
         </div>
         <p>Ec1ipse³</p>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="scripts.js" defer></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-79WKLXY465"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
